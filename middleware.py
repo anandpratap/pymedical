@@ -23,7 +23,6 @@ class LoginRequiredMiddleware:
         is_allowed = False
         path = request.path_info
         for i in EXEMPT_URLS:
-            path, i
             if i == path:
                 is_allowed = True
                 
