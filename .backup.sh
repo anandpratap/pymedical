@@ -69,7 +69,7 @@ SITE_DIR=`dirname "$PROJECT_DIR"`/`basename "$PROJECT_DIR"`
 BACKUP_DIR=`dirname "$BACKUP_DIR"`/`basename "$BACKUP_DIR"`
  
 echo -n "dumping database... "
-DUMP_NAME=${DB_NAME}_$(date +%Y-%m-%d_%H:%M).sql
+DUMP_NAME=${DB_NAME}_$(date +%Y-%m-%d_%H-%M).sql
 mysqldump --user=${DB_USER} --password=${DB_PASS} $HOST_ARGS \
  $PORT_ARGS --databases ${DB_NAME} > ${BACKUP_DIR}/${DUMP_NAME}
 if (($?)); then
