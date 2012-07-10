@@ -169,4 +169,4 @@ LOGGING = {
 #     pass
 
 LOGIN_URL = "/login/"
-LOGIN_EXEMPT_URLS = ['/','/admin/','/login/','/ajax/ajaxinvoice/']
+LOGIN_EXEMPT_URLS = ['/','/admin/','/login/','/ajax/ajaxinvoice/','/loginprocess/']
