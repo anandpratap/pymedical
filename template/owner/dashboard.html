@@ -10,6 +10,7 @@
 		<!--[if IE]><![if gte IE 6]><![endif]-->
 		<script src="/static/jquery-1.4.2.js" type="text/javascript"></script>
 		<script src="/static/jquery-ui-1.8.1.js" type="text/javascript"></script>
+<script src="/static/jquery.grumble.min.js" type="text/javascript"></script>
 		<script type="text/javascript">
 			$(function() {
 				$("#content .grid_5, #content .grid_6").sortable({
@@ -25,7 +26,14 @@
 
 
 		<script type="text/javascript">
-
+$('h1').grumble(
+			{
+				text: 'Bubble-tastic!', 
+				angle: 85, 
+				distance: 100, 
+				showAfter: 500
+			}
+		);
 $(document).ready(function() {
 
 $('#iview').click( function() {
@@ -58,7 +66,7 @@ $('#isearch').click( function() {
 	</head>
 	<body>
 
-		<h1 id="head">Anand Medical Store Dashboard</h1>
+		<h1>Anand Medical Store Dashboard</h1>
 		
 			<div id="content" class="container_16 clearfix">
 				<div class="grid_5">
