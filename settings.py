@@ -72,6 +72,7 @@ STATICFILES_DIRS = (
 "/home/maverick/Dropbox/projects/medical/template/owner/css",
 "/home/maverick/Dropbox/projects/medical/template/owner/js",
 "/home/maverick/Dropbox/projects/medical/template/owner/images",
+
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
@@ -101,6 +102,7 @@ MIDDLEWARE_CLASSES = (
 #    'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'medical.middleware.LoginRequiredMiddleware',
 
 )
 
@@ -166,3 +168,5 @@ LOGGING = {
 # except:
 #     pass
 
+LOGIN_URL = "/login/"
+LOGIN_EXEMPT_URLS = ['/','/admin/','/login/']
