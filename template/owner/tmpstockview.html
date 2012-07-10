@@ -1,0 +1,92 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<meta http-equiv='Content-Type' content='text/html; charset=UTF-8' />
+	
+	<title>Anand Medical Store</title>
+		<link rel='stylesheet' type='text/css' href='/static/style.css' />
+	<link rel='stylesheet' type='text/css' href='/static/form_style.css' />
+
+	<link rel='stylesheet' type='text/css' href='/static/print.css' media="print" />
+	
+	<script type='text/javascript' src='/static/jquery-1.3.2.min.js'></script>
+	<script type='text/javascript' src='/static/example.js'></script>
+<script type='text/javascript' src='/static/shortcut.js'></script>
+
+
+
+  <link href="/static/jquery-ui.css" rel="stylesheet" type="text/css"/>
+  <script src="/static/jquery.min.js"></script>
+  <script src="/static/jquery-ui.min.js"></script>
+<script type='text/javascript' src='/static/jquery.cookie.js'></script>  
+<script type="text/javascript">
+function myFunction(x)
+{
+
+var r=confirm("Do you really want to delete?");
+if (r==true)
+  {
+  window.location = '/stock_delete/' +x ;
+  
+  }
+else
+  {
+  
+  }
+
+}
+</script>
+
+</head>
+
+<body>
+	<div id="page-wrap">
+
+		<textarea id="header" readonly="readonly">Anand Medical Store</textarea>
+</div>
+<div id="searchContainer">                                                                                                     
+<form action={% autoescape off %}{{ base_url }}{% endautoescape %}/search/ method=POST>                                        
+  <input type="text" name="query" id="field" />                                                                                
+  <br>                                                                                                                         
+  <input type="submit" name="submit" id="submit" value="Search" />                                                             
+</form>       
+    <table id="hor-minimalist-b" summary="Employee Pay Sheet">
+
+    <thead>
+
+      <tr>
+
+        <th scope="col">Medicine Name</th>
+
+            <th scope="col">Batch No.</th>
+
+            <th scope="col">Expiry</th>
+
+            <th scope="col">MRP</th>
+	    <th scope="col">Quantity Available</th>
+	    <th scope="col">Quantity Sold</th>
+	    
+
+        </tr>
+
+    </thead>
+
+    <tbody>
+
+
+    {% autoescape off %}{{ stock_str }}{% endautoescape%}
+
+    </tbody>
+
+</table>
+
+
+	
+
+
+
+
+</body>
+
+</html>

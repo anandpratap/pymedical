@@ -1,0 +1,184 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+	<head>
+		<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+		<title>Anand Medical Store</title>
+		<link rel="stylesheet" href="/static/960.css" type="text/css" media="screen" charset="utf-8" />
+		<!--<link rel="stylesheet" href="css/fluid.css" type="text/css" media="screen" charset="utf-8" />-->
+		<link rel="stylesheet" href="/static/template.css" type="text/css" media="screen" charset="utf-8" />
+		<link rel="stylesheet" href="/static/colour.css" type="text/css" media="screen" charset="utf-8" />
+		  <link href="/static/jquery-ui.css" rel="stylesheet" type="text/css"/>
+  <script src="/static/jquery.min.js"></script>
+  <script src="/static/jquery-ui.min.js"></script>
+  <script type='text/javascript' src='/static/jquery-1.3.2.min.js'></script>
+  <script type='text/javascript' src='/static/example.js'></script>
+  <script type='text/javascript' src='/static/shortcut.js'></script>
+  <link href="/static/jquery-ui.css" rel="stylesheet" type="text/css"/>
+  <script src="/static/jquery.min.js"></script>
+  <script src="/static/jquery-ui.min.js"></script>
+  <script type='text/javascript' src='/static/jquery.cookie.js'></script>  
+
+
+	</head>
+
+
+<script type="text/javascript">
+$(document).ready( function() {
+var fullDate = new Date()
+var twoDigitMonth = ((fullDate.getMonth().length+1) === 1)? (fullDate.getMonth()+1) : '0' + (fullDate.getMonth()+1);
+var currentDate =  fullDate.getFullYear() + "-" + twoDigitMonth + "-" + fullDate.getDate() ;
+$('#dfield').val(currentDate)
+$('#mfield').val(currentDate)
+$('#dresults').html('&nbsp;').load('{% url ajax_daily_account %}?q=' + currentDate );
+$('#mresults').html('&nbsp;').load('{% url ajax_monthly_account %}?q=' + currentDate );
+
+
+    $('#dsubmit').click( function() {
+        q = $('#dfield').val();
+       $('#dresults').html('&nbsp;').load('{% url ajax_daily_account %}?q=' + q );
+    });
+
+   $('#msubmit').click( function() {
+        q = $('#mfield').val();
+       $('#mresults').html('&nbsp;').load('{% url ajax_monthly_account %}?q=' + q );
+    });
+
+  $('#dpdf').click( function() {
+       q = $('#dfield').val();
+       window.open('{% url ajax_daily_latex %}?q=' + q,'_blank' );
+    
+    });
+
+$('#fsubmit').click( function() {
+       q = $('#ffield').val().replace(" ","");
+       $('#fresults').html('&nbsp;').load('{% url ajax_firm_stats %}?q=' + q );
+    
+    });
+
+
+$('#bsubmit').click( function() {
+       p = $('#b1field').val();
+       q = $('#b2field').val();
+       window.open('{% url ajax_print_latex %}?p=' + p+'&q='+q,'_blank' );
+    
+    });
+
+
+
+ 
+});
+
+</script>
+
+
+
+
+
+
+	<body>
+		
+					<h1 id="head">Anand Medical Store</h1>
+		
+	<div id="content" class="container_16 clearfix">
+<table>
+<tr><td>
+<form action={% autoescape off %}{{ base_url }}{% endautoescape %}/dash/ method=POST>                                        
+  <input type="submit" name="submit" id="ssubmit" value="Go to Dashboard" />                                                    </form>       
+</td>
+
+
+<td><h2>Statistics</h2></td>
+</tr>
+</table>
+
+                                 <div class="grid_6">
+				   <div class="box">
+				     <h2>Daily Stats</h2>
+				     <div class="utils">
+
+							
+						
+				
+
+
+				       <input type="date" name="query" id="dfield"  style="width:180px"/>                                           <input type="submit" name="submit" id="dsubmit" value="Get Daily Stats"/>                               
+				       <input type="submit" name="submit" id="dpdf" value="PDF" /><br>                                                    
+</div>                          
+
+
+				       
+
+				     
+				     						<table>
+    
+										  <div id='dresults'> </div>
+				</table>
+
+				     
+				   </div>
+
+
+
+<div class="box">
+				     <h2>Monthly Stats</h2>
+				     <div class="utils">
+
+				       <input type="date" name="query" id="mfield"  style="width:200px"/>                                           <input type="submit" name="submit" id="msubmit" value="Get Monthly Stats"/>                                                         
+
+
+				       
+
+				     </div>
+				     						<table>
+
+										  <div id='mresults'> </div>
+				</table>
+
+				     
+				   </div>
+</div>
+                                 <div class="grid_5">
+                                     <div class="box">
+				     <h2>Print Balance Sheet</h2>
+
+				     <div class="utils">
+				       <table>
+					 <tr>
+					   <td>To:</td>
+					   
+					   <td>				       <input type="date" name="query" id="b1field"  style="width:200px"/></td>
+					 </tr><tr>              
+					   <td>From:</td>
+					   <td>                          <input type="date" name="query" id="b2field"  style="width:200px"/></td></tr>                                                      
+					 <tr><td></td>			       <td><input type="submit" name="submit" id="bsubmit" value="Print"/>       </td></tr>
+					 
+				       </table>                                                  
+				     </div>
+                                     </div>
+				     
+				     <div class="box">
+				       <h2>Company Stats</h2>
+				       <div class="utils">
+
+{% autoescape off %}{{ firmlist }}{% endautoescape %}
+<!--					 <input type="text" name="query" id="ffield"  style="width:200px"/> -->         
+					 <input type="submit" name="submit" id="fsubmit" value="Go"/> 
+				       </div>
+				       <table>
+					 <div id='fresults'> </div>
+				       </table>
+				     </div>
+				 </div>
+				
+				 
+
+
+			</div>
+		
+		<!--<div id="foot">
+					<a href="#">Contact Me</a>
+				
+		</div>-->
+	</body>
+</html>

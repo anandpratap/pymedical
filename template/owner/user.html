@@ -1,0 +1,51 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+	<head>
+		<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+		<title>Anand Medical Store</title>
+		<link rel="stylesheet" href="/static/960.css" type="text/css" media="screen" charset="utf-8" />
+		<!--<link rel="stylesheet" href="css/fluid.css" type="text/css" media="screen" charset="utf-8" />-->
+		<link rel="stylesheet" href="/static/template.css" type="text/css" media="screen" charset="utf-8" />
+		<link rel="stylesheet" href="/static/colour.css" type="text/css" media="screen" charset="utf-8" />
+	</head>
+	<body>
+		
+					<h1 id="head">Anand Medical Store</h1>
+		
+	<div id="content" class="container_16 clearfix">
+
+
+<form action={% autoescape off %}{{ base_url }}{% endautoescape %}/search/ method=POST>                                        
+  <input type="text" name="query" id="field" />                                                                                
+  <br>                                                                                                                         
+  <input type="submit" name="submit" id="submit" value="Search" />                                                             
+</form>       
+
+	<div class="grid_16">
+					<table>
+						<thead>
+							<tr>
+								<th>Medicine Name</th>
+								<th>Batch No.</th>
+								<th>Expiry</th>
+								<th>MRP</th>
+								<th>N Available</th>
+								<th>N Sold</th>
+								<th colspan="2" width="10%">Actions</th>
+							</tr>
+						</thead>
+		
+						<tbody>
+						      {% autoescape off %}{{ stock_str }}{% endautoescape%}
+						</tbody>
+					</table>
+				</div>
+			</div>
+		
+		<div id="foot">
+					<a href="#">Contact Me</a>
+				
+		</div>
+	</body>
+</html>

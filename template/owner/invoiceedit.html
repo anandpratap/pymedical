@@ -1,0 +1,300 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<meta http-equiv='Content-Type' content='text/html; charset=UTF-8' />
+	
+	<title>Anand Medical Store</title>
+	
+	<link rel='stylesheet' type='text/css' href='/static/style.css' />
+
+	<link rel='stylesheet' type='text/css' href='/static/print.css' media="print" />
+	<script type='text/javascript' src='/static/jquery-1.3.2.min.js'></script>
+	<script type='text/javascript' src='/static/example.js'></script>
+<script type='text/javascript' src='/static/shortcut.js'></script>
+
+<style>
+  .ui-autocomplete {
+  max-height: 150px;
+  overflow-y: auto;
+  /* prevent horizontal scrollbar */
+  overflow-x: hidden;
+  /* add padding to account for vertical scrollbar */
+  padding-right: 20px;
+  }
+  /* IE 6 doesn't support max-height
+   * we use height instead, but this forces the menu to always be this tall
+   */
+  * html .ui-autocomplete {
+  height: 100px;
+  }
+  </style>
+
+  <link href="/static/jquery-ui.css" rel="stylesheet" type="text/css"/>
+  <script src="/static/jquery.min.js"></script>
+  <script src="/static/jquery-ui.min.js"></script>
+<script type='text/javascript' src='/static/jquery.cookie.js'></script>  
+  <script>
+
+var tmp = 0;
+function print_today() {
+  var now = new Date();
+  var months = new Array('January','February','March','April','May','June','July','August','September','October','November','December');
+  var date = ((now.getDate()<10) ? "0" : "")+ now.getDate();
+  function fourdigits(number) {
+    return (number < 1000) ? number + 1900 : number;
+  }
+  var today =  months[now.getMonth()] + " " + date + ", " + (fourdigits(now.getYear()));
+  return today;
+}
+
+
+function roundNumber(number,decimals) {
+  var newString;// The new rounded number
+  decimals = Number(decimals);
+  if (decimals < 1) {
+    newString = (Math.round(number)).toString();
+  } else {
+    var numString = number.toString();
+    if (numString.lastIndexOf(".") == -1) {// If there is no decimal point
+      numString += ".";// give it one at the end
+    }
+    var cutoff = numString.lastIndexOf(".") + decimals;// The point at which to truncate the number
+    var d1 = Number(numString.substring(cutoff,cutoff+1));// The value of the last decimal place that we'll end up with
+    var d2 = Number(numString.substring(cutoff+1,cutoff+2));// The next decimal, after the last one we want
+    if (d2 >= 5) {// Do we need to round up at all? If not, the string will just be truncated
+      if (d1 == 9 && cutoff > 0) {// If the last digit is 9, find a new cutoff point
+        while (cutoff > 0 && (d1 == 9 || isNaN(d1))) {
+          if (d1 != ".") {
+            cutoff -= 1;
+            d1 = Number(numString.substring(cutoff,cutoff+1));
+          } else {
+            cutoff -= 1;
+          }
+        }
+      }
+      d1 += 1;
+    } 
+    if (d1 == 10) {
+      numString = numString.substring(0, numString.lastIndexOf("."));
+      var roundedNum = Number(numString) + 1;
+      newString = roundedNum.toString() + '.';
+    } else {
+      newString = numString.substring(0,cutoff) + d1.toString();
+    }
+  }
+  if (newString.lastIndexOf(".") == -1) {// Do this again, to the new string
+    newString += ".";
+  }
+  var decs = (newString.substring(newString.lastIndexOf(".")+1)).length;
+  for(var i=0;i<decimals-decs;i++) newString += "0";
+  //var newNumber = Number(newString);// make it a number if you like
+  return newString; // Output the result to the form field (change for your purposes)
+}
+
+function update_total() {
+  var total = 0;
+  $('.amount').each(function(i){
+    price = $(this).html().replace("Rs. ","");
+    if (!isNaN(price)) total += Number(price);
+  });
+
+  total = roundNumber(total,2);
+
+  $('#subtotal').html("Rs. "+total);
+  $('#total').html("Rs. "+total);
+  
+  update_balance();
+}
+
+function save_cookie() {
+$.cookie('invoiceno', $(document).find("#invoice").val(), { expires: 7, path: '/' });
+$.cookie('patientname', $(document).find("#customer-title").val(), { expires: 7, path: '/' });
+$.cookie('patient_telephone', $(document).find("#customer-phone").val(), { expires: 7, path: '/' });
+$.cookie('date', $(document).find("#date").val(), { expires: 7, path: '/' });
+$.cookie('total', $("#total").html().replace("Rs.",""), { expires: 7, path: '/' });
+$.cookie('paid', $(document).find("#paid").val().replace("Rs.",""), { expires: 7, path: '/' });
+
+var tmp = "";
+var constant = 0;
+$('.item-row').each(function(i){
+    tmp = "";			   
+    item_name = $(this).find('.item-name').val();
+    batch_no = $(this).find('.batch').val();
+    quantity_ = $(this).find('.quantity').val();
+    tmp += item_name + "___" + batch_no + "___" + quantity_;
+    $.cookie('medicine_'+constant, tmp, { expires: 7, path: '/' });
+    constant += 1;
+  });
+
+$.cookie('nmedicine', constant, { expires: 7, path: '/' });
+window.location = '/eprocess/';
+}
+
+//
+
+
+//
+
+
+function update_vat() {
+  var row = $(this).parents('.item-row');
+  //row.find('.price').val().replace("$","") * row.find('.vat').val() +
+    var amount = row.find('.cost').val().replace("Rs. ","") * row.find('.quantity').val()*(1 + row.find('.vat').val().replace("Rs. ","")/100.0);
+  amount = roundNumber(amount,2);
+  isNaN(amount) ? row.find('.amount').html("N/A") : row.find('.amount').html("Rs. "+amount);
+update_total();
+  }
+
+function update_balance() {
+  var due = $("#total").html().replace("Rs.","") - $("#paid").val().replace("Rs. ","");
+  due = roundNumber(due,2);
+  $('.due').html("Rs. "+due);  
+
+
+}
+
+function update_price() {
+  var row = $(this).parents('.item-row');
+  var price = row.find('.cost').val().replace("Rs. ","") * row.find('.quantity').val();
+  price = roundNumber(price,2);
+  isNaN(price) ? row.find('.price').html("N/A") : row.find('.price').html("Rs. "+price);
+  update_total();
+}
+
+
+
+function bind() {
+  $(".cost").blur(update_price);
+  $(".quantity").blur(update_price);
+  $(".quantity").blur(update_vat);
+  $(".cost").blur(update_vat);
+  $(".vat").blur(update_vat);
+    }
+
+$(document).ready(function() {
+ 
+
+  $('input').click(function(){
+    $(this).select();
+  });
+
+
+  $("#paid").blur(update_balance);
+
+   
+
+
+  
+  bind();
+  
+  $(".delete").live('click',function(){
+    $(this).parents('.item-row').remove();
+    update_total();
+    if ($(".delete").length < 2) $(".delete").hide();
+  });
+
+  $("td.total-line.balance").live('click',function(){
+    save_cookie();
+  });
+
+  
+
+
+  
+});
+
+
+</script>
+
+
+</head>
+
+<body>
+
+	<div id="page-wrap">
+
+		<textarea id="header" readonly="readonly">Anand Medical Store</textarea>
+		
+		<div id="identity">
+		
+            <textarea id="address" readonly="readonly">Anand Medical Store
+Opposite of Bank of India,
+Kurawar Mandi, Dist. Rajgarh 465667,
+
+Phone: (07375)    244340 </textarea>
+
+		
+		<div style="clear:both"></div>
+		
+		<div id="customer">
+
+            <textarea id="customer-title" placeholder="Name">{{invoice.patient.name}}</textarea>
+	    <textarea id="customer-phone" placeholder="Telephone">{{invoice.patient.telephone}}</textarea>
+
+            <table id="meta">
+                <tr>
+                    <td class="meta-head">Invoice #</td>
+                    <td><textarea id="invoice"  readonly="readonly">{% autoescape off %}{{ invoice.invoice_no }}{% endautoescape%}</textarea></td>
+                </tr>
+                <tr>
+                    <td class="meta-head">Date</td>
+                    <td><textarea id="date" readonly="readonly">{{invoice.invoice_date }}</textarea></td>
+                </tr>
+                <!--<tr>
+                    <td class="meta-head">Amount Due</td>
+                    <td><div class="due">Rs. 0.00</div></td>
+                </tr>
+		-->
+            </table>
+		
+		</div>
+		
+		<table id="items">
+		
+		  <tr>
+		      <th>Item</th>
+		      <th>Batch No.</th>
+		      <th>Unit Cost</th>
+		      <th>Quantity</th>
+		      <th>Price</th>
+		      <th>VAT</th>
+		      <th>Amount</th>
+		  </tr>
+		  
+		  {% autoescape off %}{{ tmp_str }}{% endautoescape%}
+<!--		  <tr>
+		      <td colspan="4" class="blank"></td>
+		      <td colspan="2" class="total-line">Subtotal</td>
+		      <td class="total-value"><div id="subtotal">Rs. 0.00</div></td>
+		  </tr>-->
+		  <tr>
+
+		      <td colspan="4" class="blank"> </td>
+		      <td colspan="2" class="total-line">Total</td>
+		      <td class="total-value"><div id="total">Rs. {{invoice.total}}</div></td>
+		  </tr>
+		  <tr>
+		      <td colspan="4" class="blank"> </td>
+		      <td colspan="2" class="total-line">Amount Paid</td>
+
+		      <td class="total-value"><textarea id="paid">Rs. {{invoice.paid}}</textarea></td>
+		  </tr>
+		  <tr>
+		      <td colspan="4" class="total-line balance"> <a href="javascript:;">Done</a> </td>
+		      <td colspan="2" class="total-line balance">Balance Due</td>
+		      <td class="total-value balance"><div class="due">Rs. {{balance}}</div></td>
+		  </tr>
+		
+		</table>
+			
+		<div id="terms">
+		  <h5>Terms</h5>
+		  <span>Happy Day Ahead!</span>
+		</div>
+	
+	</div>
+	
+</body>
+
+</html>

@@ -1,0 +1,119 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<meta http-equiv='Content-Type' content='text/html; charset=UTF-8' />
+	
+	<title>Anand Medical Store</title>
+		<link rel='stylesheet' type='text/css' href='/static/style.css' />
+	<link rel='stylesheet' type='text/css' href='/static/form_style.css' />
+
+	<link rel='stylesheet' type='text/css' href='/static/print.css' media="print" />
+	<script type='text/javascript' src='/static/jquery-1.3.2.min.js'></script>
+	<script type='text/javascript' src='/static/example.js'></script>
+<script type='text/javascript' src='/static/shortcut.js'></script>
+
+
+
+  <link href="/static/jquery-ui.css" rel="stylesheet" type="text/css"/>
+  <script src="/static/jquery.min.js"></script>
+  <script src="/static/jquery-ui.min.js"></script>
+<script type='text/javascript' src='/static/jquery.cookie.js'></script>  
+ 
+  <script>
+
+
+$(document).ready(function() {
+ 
+  $("input#tag_name").autocomplete({
+      source: {% autoescape off %}{{ item }}{% endautoescape%}
+      
+  });
+
+
+  $("input#pharma_shop").autocomplete({
+      source: {% autoescape off %}{{ pharmashop }}{% endautoescape%}
+  });
+
+
+//$( "input#tag_name" ).autocomplete( "option", "delay", 0 );
+});
+
+</script>
+
+
+</head>
+
+<body>
+	<div id="page-wrap">
+
+		<textarea id="header" readonly="readonly">Anand Medical Store</textarea>
+</div>
+	
+		<form id=payment action="/stock_edit_process/" method=POST>
+				<legend>Edit Stock</legend>
+		
+				<ol>
+					
+					<li>
+						<label for=tag_name>Name</label>
+						<input id=tag_name name=tag_name type=text placeholder="Med Name" required autofocus value='{{ tmp_stock.tag.name }}' readonly="readonly">
+					</li>
+					
+					<li>
+						<label for=batch_no>Batch</label>
+					<input id=batch_no name=batch_no type=text placeholder="Batch" required autofocus readonly="readonly" value='{{ tmp_stock.batch_no }}'>
+					</li>
+					
+					<li>
+						<label for=expiry_date>Expiry Date</label>
+				
+						<input id=expiry_date name=expiry_date type=date required value={{ tmp_date }} readonly="readonly">
+					</li>
+
+
+<li>
+
+<label for=nmedicine>Number</label>
+						<input id=nmedicine name=nmedicine type=text placeholder="Quantity" required autofocus value='{{ tmp_stock.navailable }}'>
+</li>
+
+
+<li>
+<label for=actual_price>Actual Price</label>
+						<input id=actual_price name=actual_price type=text placeholder="Actual Price" required autofocus readonly="readonly" value='{{ tmp_stock.actual_price }}'>
+</li>
+
+<li>
+
+<label for=printed_price>Printed Price</label>
+						<input id=printed_price name=printed_price type=text placeholder="Printed Price" required autofocus readonly="readonly" value='{{ tmp_stock.printed_price }}'>
+</li>
+
+
+<li>
+
+<label for=vat>VAT</label>
+						<input id=vat name=vat type=text placeholder="VAT" required autofocus readonly="readonly" value={{ tmp_stock.vat }}>
+</li>
+<li>
+
+<label for=pharma_shop>Pharma Shop</label>
+						<input id=pharma_shop name=pharma_shop type=text placeholder="Pharma Shop" required autofocus value={{ tmp_stock.pharma_shop }}>
+</li>
+
+						
+				</ol>
+			
+
+			
+			
+				<button type=submit>Submit</button>
+
+		
+		</form>
+	
+
+</body>
+
+</html>

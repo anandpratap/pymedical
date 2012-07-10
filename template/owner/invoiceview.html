@@ -1,0 +1,118 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<meta http-equiv='Content-Type' content='text/html; charset=UTF-8' />
+	
+	<title>Anand Medical Store</title>
+	
+	<link rel='stylesheet' type='text/css' href='/static/style.css' />
+
+	<link rel='stylesheet' type='text/css' href='/static/print.css' media="print" />
+	<script type='text/javascript' src='/static/jquery-1.3.2.min.js'></script>
+	<script type='text/javascript' src='/static/example.js'></script>
+<script type='text/javascript' src='/static/shortcut.js'></script>
+
+
+
+  <link href="/static/jquery-ui.css" rel="stylesheet" type="text/css"/>
+  <script src="/static/jquery.min.js"></script>
+  <script src="/static/jquery-ui.min.js"></script>
+<script type='text/javascript' src='/static/jquery.cookie.js'></script>  
+
+</head>
+
+<body>
+
+	<div id="page-wrap">
+
+		<textarea id="header" readonly="readonly">Anand Medical Store</textarea>
+		
+		<div id="identity">
+		
+            <textarea id="address" readonly="readonly">Anand Medical Store
+Opposite of Bank of India,
+Kurawar Mandi, Dist. Rajgarh 465667,
+
+Phone: (07375)    244340 </textarea>
+
+		
+		<div style="clear:both"></div>
+		
+		<div id="customer">
+
+            <textarea id="customer-title" readonly="readonly">{{ invoice.patient.name }}</textarea>
+	    <textarea id="customer-phone" readonly="readonly">{{ invoice.patient.telephone }}</textarea>
+
+            <table id="meta">
+                <tr>
+                    <td class="meta-head">Invoice #</td>
+                    <td><textarea id="invoice"  readonly="readonly">{{ invoice.invoice_no }}</textarea></td>
+                </tr>
+                <tr>
+                    <td class="meta-head">Date</td>
+                    <td><textarea id="date" readonly="readonly">{{ invoice.invoice_date }}</textarea></td>
+                </tr>
+                <!--<tr>
+                    <td class="meta-head">Amount Due</td>
+                    <td><div class="due">Rs. 0.00</div></td>
+                </tr>
+		-->
+            </table>
+		
+		</div>
+		
+		<table id="items">
+		
+		  <tr>
+		      <th>Item</th>
+		      <th>Batch No.</th>
+		      <th>Unit Cost</th>
+		      <th>Quantity</th>
+		      <th>Price</th>
+		      <th>VAT</th>
+		      <th>Amount</th>
+		  </tr>
+		  
+		 
+		  
+		  {% autoescape off %}{{ tmp_str }}{% endautoescape%}
+
+		  
+
+		  
+<!--		  <tr>
+		      <td colspan="4" class="blank"></td>
+		      <td colspan="2" class="total-line">Subtotal</td>
+		      <td class="total-value"><div id="subtotal">Rs. 0.00</div></td>
+		  </tr>-->
+		  <tr>
+
+		      <td colspan="4" class="blank"> </td>
+		      <td colspan="2" class="total-line">Total</td>
+		      <td class="total-value"><div id="total">Rs. {{invoice.total}}</div></td>
+		  </tr>
+		  <tr>
+		      <td colspan="4" class="blank"> </td>
+		      <td colspan="2" class="total-line">Amount Paid</td>
+
+		      <td class="total-value"><span id="paid">Rs. {{invoice.paid}}</span></td>
+		  </tr>
+		  <tr>
+		      <td colspan="4" class="total-line balance"></td>
+		      <td colspan="2" class="total-line balance">Balance Due</td>
+		      <td class="total-value balance"><div class="due">Rs. {{balance}}</div></td>
+		  </tr>
+		
+		</table>
+			
+		<div id="terms">
+		  <h5>Terms</h5>
+		  <span>Happy Day Ahead!</span>
+		</div>
+	
+	</div>
+	
+</body>
+
+</html>

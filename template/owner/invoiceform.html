@@ -1,0 +1,134 @@
+
+
+		<textarea id="header" readonly="readonly">Anand Medical Store</textarea>
+		
+<!--		<div id="identity">
+		
+            <textarea id="address" readonly="readonly">Anand Medical Store
+Opposite of Bank of India,
+Kurawar Mandi, Dist. Rajgarh 465667,
+
+Phone: (07375)    244340 </textarea>
+-->
+		
+		<div style="clear:both"></div>
+		
+		<div id="customer">
+		  <h1>{{ error }}</h1>
+            <textarea id="customer-title" placeholder="Name"></textarea>
+	    <textarea id="customer-phone" placeholder="Telephone"></textarea>
+
+            <table id="meta">
+
+
+                <tr>
+                    <td class="meta-head">Last Time</td>
+                    <td><textarea id="lasttime" readonly="readonly"></textarea></td>
+                </tr>
+
+
+                <tr>
+                    <td class="meta-head">Invoice #</td>
+                    <td><textarea id="invoice"  readonly="readonly">{% autoescape off %}{{ invoiceno }}{% endautoescape%}</textarea></td>
+                </tr>
+                <tr>
+                    <td class="meta-head">Date</td>
+                    <td><textarea id="date" readonly="readonly">December 15, 2009</textarea></td>
+                </tr>
+                <!--<tr>
+                    <td class="meta-head">Amount Due</td>
+                    <td><div class="due">Rs. 0.00</div></td>
+                </tr>
+		-->
+            </table>
+		
+		</div>
+		
+		<table id="items">
+		
+		  <tr>
+		      <th>Item</th>
+		      <th>Batch No.</th>
+		      <th>Unit Cost</th>
+		      <th>Quantity</th>
+		      <th>Price</th>
+		      <th>VAT</th>
+		      <th>Amount</th>
+		  </tr>
+		  
+		  <tr class="item-row">
+		      <td><div class="delete-wpr"><textarea class="item-name" id="autocomplete" accesskey="a"></textarea><a class="delete" href="javascript:;" title="Remove row">X</a></div></td>
+		      <td><textarea class="batch"  readonly="readonly"></textarea></td>
+		      <td><textarea class="cost"  readonly="readonly"></textarea></td>
+		      <td><textarea class="quantity"></textarea></td>
+		      <td><span class="price"></span></td>
+		      <td><textarea class="vat"  readonly="readonly"></textarea></td>
+		      <td><span class="amount"></span></td>
+		  </tr>
+		  
+ <tr class="item-row">
+		      <td><div class="delete-wpr"><textarea class="item-name" id="autocomplete" accesskey="a"></textarea><a class="delete" href="javascript:;" title="Remove row">X</a></div></td>
+		      <td><textarea class="batch"  readonly="readonly"></textarea></td>
+		      <td><textarea class="cost"  readonly="readonly"></textarea></td>
+		      <td><textarea class="quantity"></textarea></td>
+		      <td><span class="price"></span></td>
+		      <td><textarea class="vat"  readonly="readonly"></textarea></td>
+		      <td><span class="amount"></span></td>
+		  </tr>
+ <tr class="item-row">
+		      <td><div class="delete-wpr"><textarea class="item-name" id="autocomplete" accesskey="a"></textarea><a class="delete" href="javascript:;" title="Remove row">X</a></div></td>
+		      <td><textarea class="batch"  readonly="readonly"></textarea></td>
+		      <td><textarea class="cost"  readonly="readonly"></textarea></td>
+		      <td><textarea class="quantity"></textarea></td>
+		      <td><span class="price"></span></td>
+		      <td><textarea class="vat"  readonly="readonly"></textarea></td>
+		      <td><span class="amount"></span></td>
+		  </tr>
+ <tr class="item-row">
+		      <td><div class="delete-wpr"><textarea class="item-name" id="autocomplete" accesskey="a"></textarea><a class="delete" href="javascript:;" title="Remove row">X</a></div></td>
+		      <td><textarea class="batch"  readonly="readonly"></textarea></td>
+		      <td><textarea class="cost"  readonly="readonly"></textarea></td>
+		      <td><textarea class="quantity"></textarea></td>
+		      <td><span class="price"></span></td>
+		      <td><textarea class="vat"  readonly="readonly"></textarea></td>
+		      <td><span class="amount"></span></td>
+		  </tr>
+
+		  
+
+<tr id="hiderow">
+		    <td colspan="7"><a id="addrow" href="javascript:;" title="Add a row">Add a row</a></td>
+		  </tr>
+		  
+<!--		  <tr>
+		      <td colspan="4" class="blank"></td>
+		      <td colspan="2" class="total-line">Subtotal</td>
+		      <td class="total-value"><div id="subtotal">Rs. 0.00</div></td>
+		  </tr>-->
+		  <tr>
+		      <td colspan="4" rowspan="2" class="blank"><div id='quant' style='font-size:40px;text-align:center;color: red;'>0</div></td>
+		      <td colspan="2" class="total-line">Total</td>
+		      <td class="total-value"><div id="total">Rs. 0.00</div></td>
+		  </tr>
+		  <tr>
+		   
+		      <td colspan="2" class="total-line">Amount Paid</td>
+
+		      <td class="total-value"><textarea id="paid">Rs. 0.00</textarea></td>
+		  </tr>
+		  <tr>
+<td colspan="3" class="total-line balance" id="hint"> <div id='credit' style='font-size:20px;text-align:center;color: red;'>0</div> </td>
+		      <td colspan="1" class="total-line balance"> <a href="javascript:;">Done</a> </td>
+		    
+		      <td colspan="2" class="total-line balance">Balance Due</td>
+		      <td class="total-value balance"><div class="due">Rs. 0.00<textarea readonly="readonly"></textarea></div></td>
+		  </tr>
+		
+		</table>
+			
+		<div id="terms">
+		  <h5>Terms</h5>
+		  <span>Happy Day Ahead!</span>
+		</div>
+	
+
