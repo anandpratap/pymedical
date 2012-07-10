@@ -4,7 +4,7 @@
 # Backup Django sites
  
 BACKUP_DIR="/home/maverick/Dropbox/Backup"
-find ${BACKUP_DIR}* -type f -mtime +10 -exec rm '{}' '+'
+find ${BACKUP_DIR}* -type f -mtime +2 -exec rm '{}' '+'
  
 # end of user configurable section
  
