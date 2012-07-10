@@ -22,8 +22,8 @@ class LoginRequiredMiddleware:
  'django.core.context_processors.auth'."
         is_allowed = False
         path = request.path_info
-        print path
         for i in EXEMPT_URLS:
+            path, i
             if i == path:
                 is_allowed = True
                 
