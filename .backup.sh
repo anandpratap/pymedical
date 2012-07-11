@@ -2,14 +2,13 @@
  
 # (C) 2009 Guy Rutenberg
 # Backup Django sites
- 
-BACKUP_DIR="/home/maverick/Dropbox/Backup"
+FIRSTLINE=`head -n 1 .dir.log`
+BACKUP_DIR=${FIRSTLINE}
 find ${BACKUP_DIR}* -type f -mtime +2 -exec rm '{}' '+'
- 
+echo ${BACKUP_DIR}
 # end of user configurable section
  
 PROG=`basename "$0"`
-echo $PROG
 print_usage () {
     echo "USAGE: $0 [options] PROJ_ROOT"
     echo "Backup a Django project located in PROJ_ROOT"
@@ -77,7 +76,7 @@ if (($?)); then
 	exit 1
 fi
 echo "done"
- 
+find ${BACKUP_DIR}* -type f -mtime +2 -exec rm '{}' '+' 
 # PUT_TARBALL_FTP=""
 # if [ "$DB_ONLY" -eq "0" ]; then
 # 	echo -n "Creating tarball... "
