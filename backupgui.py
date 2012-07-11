@@ -3,6 +3,8 @@ import tkFileDialog, tkMessageBox, tkSimpleDialog
 import os
 
 import tkSimpleDialog
+base_url = "/home/maverick/Dropbox/projects/medical/"
+os.chdir("/home/maverick/Dropbox/projects/medical/")
 
 class MyDialog(tkSimpleDialog.Dialog):
 
@@ -34,8 +36,9 @@ class App:
 
     def __init__(self, master):
         self.pin = '123'
+        os.system("cd /home/maverick/Dropbox/projects/medical")
         try:
-            f = file(".dir.log")
+            f = file(base_url+"./.dir.log")
             self.local_dir = f.readline().replace("\n","")
             self.foreign_dir = f.readline().replace("\n","")
         except:
@@ -44,8 +47,8 @@ class App:
         frame = Frame(master)
         frame.pack()
         
-        self.select_local_backup_dir = Button(frame, text="Select Local Backup Dir", command=self.select_local_dir)
-        self.select_local_backup_dir.pack(side=TOP)
+      #  self.select_local_backup_dir = Button(frame, text="Select Local Backup Dir", command=self.select_local_dir)
+      #  self.select_local_backup_dir.pack(side=TOP)
         
         self.select_foreign_backup_dir = Button(frame, text="Select Foreign Backup Dir", command=self.select_foreign_dir)
         self.select_foreign_backup_dir.pack(side=TOP)
@@ -81,17 +84,17 @@ class App:
         if len(self.foreign_dir ) > 0:
             self.f.set("FOREIGN: "+self.foreign_dir)
     def func_local_backup(self):
-        os.system("./.backup.sh")
+        os.system(""+base_url+"./.backup.sh")
 
     def func_foreign_backup(self):
-        os.system("./.fbackup.sh")
+        os.system(""+base_url+"./.fbackup.sh")
     def func_default(self):
-        os.system('rm .dir.log')
-        cmd = "echo '" + self.local_dir + "' >> .dir.log"
+        os.system('rm '+base_url+'./.dir.log')
+        cmd = "echo '" + self.local_dir + "' >> "+base_url+"./.dir.log"
         os.system(cmd)
-        cmd = "echo '" + self.foreign_dir + "' >> .dir.log"
+        cmd = "echo '" + self.foreign_dir + "' >> " +base_url+"./.dir.log"
         os.system(cmd)
-    
+        
     def restore(self):
         pin = tkSimpleDialog.askstring("Restore", "PIN")
         if pin == self.pin:
