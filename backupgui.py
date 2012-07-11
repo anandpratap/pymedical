@@ -62,8 +62,8 @@ class App:
         self.restore_now.pack(side=TOP)
        
         
-        self.make_default = Button(frame, text="Default", command=self.func_default)
-        self.make_default.pack(side=TOP)
+        #self.make_default = Button(frame, text="Default", command=self.func_default)
+        #self.make_default.pack(side=TOP)
         
         self.l = StringVar()
         self.f = StringVar()
@@ -73,7 +73,14 @@ class App:
         self.show_local_dir.pack(side=TOP)
         self.show_foreign_dir = Label(frame, textvariable=self.f)
         self.show_foreign_dir.pack(side=TOP)
-
+    def func_default(self):
+        os.system('rm '+base_url+'./.dir.log')
+        cmd = "echo '" + self.local_dir + "' >> "+base_url+"./.dir.log"
+        os.system(cmd)
+        cmd = "echo '" + self.foreign_dir + "' >> " +base_url+"./.dir.log"
+        os.system(cmd)
+        
+  
 
     def select_local_dir(self):
         self.local_dir = tkFileDialog.askdirectory(parent=root,initialdir="/home/maverick",title='Please select a directory')
@@ -83,18 +90,12 @@ class App:
         self.foreign_dir = tkFileDialog.askdirectory(parent=root,initialdir="/home/maverick",title='Please select a directory')
         if len(self.foreign_dir ) > 0:
             self.f.set("FOREIGN: "+self.foreign_dir)
+            self.func_default()
     def func_local_backup(self):
         os.system(""+base_url+"./.backup.sh")
 
     def func_foreign_backup(self):
         os.system(""+base_url+"./.fbackup.sh")
-    def func_default(self):
-        os.system('rm '+base_url+'./.dir.log')
-        cmd = "echo '" + self.local_dir + "' >> "+base_url+"./.dir.log"
-        os.system(cmd)
-        cmd = "echo '" + self.foreign_dir + "' >> " +base_url+"./.dir.log"
-        os.system(cmd)
-        
     def restore(self):
         pin = tkSimpleDialog.askstring("Restore", "PIN")
         if pin == self.pin:

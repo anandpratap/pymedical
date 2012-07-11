@@ -2,8 +2,10 @@
  
 # (C) 2009 Guy Rutenberg
 # Backup Django sites
-FIRSTLINE=`head -n 1 .dir.log`
+FIRSTLINE=`head -n 1 /home/maverick/Dropbox/projects/medical/.dir.log`
+echo ${FIRSTLINE}
 BACKUP_DIR=${FIRSTLINE}
+cd ${BACKUP_DIR}
 find ${BACKUP_DIR}* -type f -mtime +2 -exec rm '{}' '+'
 echo ${BACKUP_DIR}
 # end of user configurable section
