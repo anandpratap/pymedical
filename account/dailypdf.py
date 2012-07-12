@@ -9,7 +9,7 @@ from reportlab.lib.units import cm, mm, inch, pica
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfbase import pdfmetrics
 from tempfile import NamedTemporaryFile
-from reportlab.graphics.barcode import code39
+ 
 class Address:
     firstname = ""
     lastname = ""
@@ -49,7 +49,7 @@ class Item:
     def total(self):
         return self.count*self.price
  
-class Invoice:
+class DailyPdf:
 
     client = Address()
     provider = Address()
@@ -65,8 +65,11 @@ class Invoice:
  
     def __init__(self):
         self.p = inflect.engine()
+        #self.TIN = "123121414"
+        #self.CAN = "13123123123"
         self.TIN = "23102404783"
         self.CAN = "20/13/31/2009 21/14/31/2009"
+        
         self.TOP = 260
         self.LEFT = 20
  
@@ -74,7 +77,7 @@ class Invoice:
  
         self.pdffile = NamedTemporaryFile(delete=False)
          
-        self.pdf = Canvas(self.pdffile.name, pagesize = letter)
+        self.pdf = Canvas(self.pdffile.name, pagesize = A4)
         self.pdf.setFont("DejaVu", 15)
         self.pdf.setStrokeColorRGB(0, 0, 0)
  
@@ -117,16 +120,16 @@ class Invoice:
     def getContent(self):
         # Texty
         self.drawMain()
-        barcode=code39.Extended39("inv"+str(int(self.vs)),barWidth=0.5*mm,barHeight=5*mm)
-        barcode.drawOn(self.pdf,self.TOP+45,(self.LEFT+735))
-      
         self.drawProvider(self.TOP-8,self.LEFT+3)
-#        self.drawClient(self.TOP-30,self.LEFT+91)
-        self.drawPayment(self.TOP-26,self.LEFT+3)
-        self.drawItems(self.TOP-45,self.LEFT)
+        #        self.drawClient(self.TOP-30,self.LEFT+91)
+        #self.drawPayment(self.TOP-26,self.LEFT+3)
+        self.pdf.setFont("DejaVu", 18)
+        self.pdf.drawString((self.LEFT+75)*mm, (self.TOP-34)*mm, "Sales")
         self.drawDates(self.TOP-10,self.LEFT+91)
-        self.drawWatermark()
+        p = self.drawsItems(self.TOP-45,self.LEFT)
+        self.drawpItems(p-10,self.LEFT)
         #self.pdf.setFillColorRGB(0, 0, 0)
+ 
         self.pdf.showPage()
         self.pdf.save()
  
@@ -145,10 +148,11 @@ class Invoice:
     def drawMain(self):
         # Horní lajna
         self.pdf.drawString(self.LEFT*mm, self.TOP*mm, self.title)
-        self.pdf.drawString((self.LEFT+100)*mm, self.TOP*mm, "Invoice No.: %s" % self.vs)
+        self.pdf.drawString((self.LEFT+65)*mm, self.TOP*mm, "Daily Balace Sheet")
+        self.pdf.drawString((self.LEFT+120)*mm, self.TOP*mm, "Dated: %s" % self.date)
  
         # Rámečky
-        self.pdf.rect((self.LEFT)*mm, (self.TOP-38)*mm, (self.LEFT+156)*mm, 35*mm, stroke=True, fill=False)
+        #self.pdf.rect((self.LEFT)*mm, (self.TOP-38)*mm, (self.LEFT+156)*mm, 35*mm, stroke=True, fill=False)
  
         path = self.pdf.beginPath()
         path.moveTo((self.LEFT+88)*mm, (self.TOP-3)*mm)
@@ -168,9 +172,7 @@ class Invoice:
         path.moveTo((self.LEFT+88)*mm, (self.TOP-26)*mm)
         path.lineTo((self.LEFT+88)*mm, (self.TOP-20)*mm)
         self.pdf.drawPath(path, True, True)
-    def drawWatermark(self):
-        pass
-       
+ 
     def drawClient(self,TOP,LEFT):
         self.pdf.setFont("DejaVu", 12)
         self.pdf.drawString((LEFT)*mm, (TOP)*mm, "Odběratel")
@@ -214,55 +216,72 @@ class Invoice:
  
         self.pdf.drawText(text)
         
-    def drawItems(self,TOP,LEFT):
+    def drawsItems(self,TOP,LEFT):
+        LEFT += 10
         # Items
         #path = self.pdf.beginPath()
         #path.moveTo((LEFT)*mm, (TOP-4)*mm)
         #path.lineTo((LEFT+176)*mm, (TOP-4)*mm)
         #self.pdf.drawPath(path, True, True)
- 
+        
         self.pdf.setFont("DejaVu", 11)
         i=1
-        self.pdf.drawString((LEFT+1)*mm, (TOP-i)*mm, "Description")
-        self.pdf.drawString((LEFT+98)*mm, (TOP-i)*mm, "Quantity")
-        self.pdf.drawString((LEFT+121)*mm, (TOP-i)*mm, "Unit Price")
-        self.pdf.drawString((LEFT+149)*mm, (TOP-i)*mm, "Amount")
+        self.pdf.drawString((LEFT+1)*mm, (TOP-i)*mm, "Invoice No.")
+        self.pdf.drawString((LEFT+30)*mm, (TOP-i)*mm, "Patient Name")
+        self.pdf.drawString((LEFT+85)*mm, (TOP-i)*mm, "No. Item")
+        self.pdf.drawString((LEFT+110)*mm, (TOP-i)*mm, "Total")
+        self.pdf.drawString((LEFT+140)*mm, (TOP-i)*mm, "Paid")
+        i+= 2
+        path = self.pdf.beginPath()
+        path.moveTo((LEFT)*mm, (TOP-i)*mm)
+        path.lineTo((LEFT+160)*mm, (TOP-i)*mm)
+        self.pdf.drawPath(path, True, True)
+
         i+=7
         self.pdf.setFont("DejaVu", 9)
         # List
         total=0.0
-
-        for x in self.items:
-            self.pdf.drawString((LEFT+1)*mm, (TOP-i)*mm, x.name)
+        tpaid = 0.0
+        for x in self.sitems:
+            if TOP - i < 30:
+                self.pdf.showPage()
+                self.pdf.setFont("DejaVu", 9)
+                i = TOP - 270
+            self.pdf.drawString((LEFT+1)*mm, (TOP-i)*mm, x.invoiceno)
             i+=0
-            self.pdf.drawString((LEFT+100)*mm, (TOP-i)*mm, "%d" % x.count)
-            self.pdf.drawString((LEFT+122)*mm, (TOP-i)*mm, "Rs. %.2f" % x.price)
-            self.pdf.drawString((LEFT+150)*mm, (TOP-i)*mm, "Rs. %.2f" % (x.total()))
+            self.pdf.drawString((LEFT+31)*mm, (TOP-i)*mm, x.patientname)
+            self.pdf.drawString((LEFT+86)*mm, (TOP-i)*mm, str(x.nitems))
+            self.pdf.drawString((LEFT+111)*mm, (TOP-i)*mm,"Rs. " +str(x.total))
+            self.pdf.drawString((LEFT+141)*mm, (TOP-i)*mm, "Rs. " + str(x.paid))
             i+=5
-            total += x.total()
-        self.items = []
+            total += x.total
+            tpaid += x.paid
+            
         path = self.pdf.beginPath()
         path.moveTo((LEFT)*mm, (TOP-i)*mm)
-        path.lineTo((LEFT+176)*mm, (TOP-i)*mm)
+        path.lineTo((LEFT+160)*mm, (TOP-i)*mm)
         self.pdf.drawPath(path, True, True)
+        i+= 10
+        path = self.pdf.beginPath()
+        path.moveTo((LEFT)*mm, (TOP-i)*mm)
+        path.lineTo((LEFT+160)*mm, (TOP-i)*mm)
+        self.pdf.drawPath(path, True, True)
+
         total = round(total,2)
+        tpaid = round(tpaid,2)
         self.pdf.setFont("DejaVu", 10)
-        self.pdf.drawString((LEFT+1)*mm, (TOP-i-8)*mm, self.p.number_to_words(total).title() + " Rupees Only.")
-        self.pdf.setFont("DejaVu", 12)
-        self.pdf.drawString((LEFT+130)*mm, (TOP-i-8)*mm, "Total: Rs. %s" % total)
-        self.pdf.setFont("Helvetica-Bold", 40)
-        self.pdf.setStrokeGray(0.25)
-        self.pdf.setFillColorRGB(0.95, 0.95, 0.95)
-        self.pdf.drawString((LEFT+60)*mm, (TOP-i)*mm, 'PAID')
-        self.pdf.setFillColorRGB(0, 0, 0)
+        self.pdf.setFont("DejaVu", 11)
+        self.pdf.drawString((LEFT+50)*mm, (TOP-i+3)*mm, "Total Sale: ")
+        self.pdf.drawString((LEFT+75)*mm, (TOP-i+3)*mm, "Rs. " + str(total))
+       
       
  
-        self.pdf.rect((LEFT)*mm, (TOP-i-12)*mm, (LEFT+156)*mm, (i+19)*mm, stroke=True, fill=False) #140,142
- 
+#        self.pdf.rect((LEFT)*mm, (TOP-i-12)*mm, (LEFT+156)*mm, (i+19)*mm, stroke=True, fill=False) #140,142
+        
         if self.sign_image:
             self.pdf.drawImage(self.sign_image, (LEFT+98)*mm, (TOP-i-72)*mm)
- 
-        # if self.creator: 
+        return TOP - i
+            # if self.creator: 
         #     path = self.pdf.beginPath()
         #     path.moveTo((LEFT+110)*mm, (TOP-i-70)*mm)
         #     path.lineTo((LEFT+164)*mm, (TOP-i-70)*mm)
@@ -270,6 +289,70 @@ class Invoice:
  
         #     self.pdf.drawString((LEFT+112)*mm, (TOP-i-75)*mm, "Authorized Signatory")
  
+    def drawpItems(self,TOP,LEFT):
+        LEFT += 10
+        self.pdf.setFont("DejaVu", 20)
+        self.pdf.drawString((LEFT+60)*mm, (TOP-5)*mm, "Purchase")
+        # Items
+        #path = self.pdf.beginPath()
+        #path.moveTo((LEFT)*mm, (TOP-4)*mm)
+        #path.lineTo((LEFT+176)*mm, (TOP-4)*mm)
+        #self.pdf.drawPath(path, True, True)
+        
+        self.pdf.setFont("DejaVu", 11)
+        i=15
+        self.pdf.drawString((LEFT+1)*mm, (TOP-i)*mm, "Pharma Shop")
+        self.pdf.drawString((LEFT+40)*mm, (TOP-i)*mm, "Item Name")
+        self.pdf.drawString((LEFT+75)*mm, (TOP-i)*mm, "Batch No.")
+        self.pdf.drawString((LEFT+99)*mm, (TOP-i)*mm, "Rate")
+        self.pdf.drawString((LEFT+115)*mm, (TOP-i)*mm, "Quantity")
+        self.pdf.drawString((LEFT+140)*mm, (TOP-i)*mm, "Amount")
+        i+= 2
+        path = self.pdf.beginPath()
+        path.moveTo((LEFT)*mm, (TOP-i)*mm)
+        path.lineTo((LEFT+160)*mm, (TOP-i)*mm)
+        self.pdf.drawPath(path, True, True)
+
+        i+=7
+        self.pdf.setFont("DejaVu", 9)
+        # List
+        total=0.0
+        tpaid = 0.0
+        for x in self.pitems:
+            if TOP - i < 30:
+                self.pdf.showPage()
+                self.pdf.setFont("DejaVu", 9)
+                i = TOP - 270
+            self.pdf.drawString((LEFT+1)*mm, (TOP-i)*mm, x.pharmashop)
+            i+=0
+            self.pdf.drawString((LEFT+41)*mm, (TOP-i)*mm, x.itemname)
+            self.pdf.drawString((LEFT+76)*mm, (TOP-i)*mm, x.batchno)
+            self.pdf.drawString((LEFT+100)*mm, (TOP-i)*mm,str(x.rate))
+            self.pdf.drawString((LEFT+121)*mm, (TOP-i)*mm,str(x.quantity))
+            self.pdf.drawString((LEFT+141)*mm, (TOP-i)*mm, str(x.amount))
+            i+=5
+            total += x.amount
+         
+        path = self.pdf.beginPath()
+        path.moveTo((LEFT)*mm, (TOP-i)*mm)
+        path.lineTo((LEFT+160)*mm, (TOP-i)*mm)
+        self.pdf.drawPath(path, True, True)
+        i+= 10
+        path = self.pdf.beginPath()
+        path.moveTo((LEFT)*mm, (TOP-i)*mm)
+        path.lineTo((LEFT+160)*mm, (TOP-i)*mm)
+        self.pdf.drawPath(path, True, True)
+
+        total = round(total,2)
+        tpaid = round(tpaid,2)
+        self.pdf.setFont("DejaVu", 10)
+        self.pdf.setFont("DejaVu", 11)
+        self.pdf.drawString((LEFT+40)*mm, (TOP-i+3)*mm, "Total Purchase: ")
+        self.pdf.drawString((LEFT+75)*mm, (TOP-i+3)*mm, "Rs. " + str(total))
+       
+        return TOP - i
+ 
+#        self.pdf.rect((LEFT)*mm, (TOP-i-12)*mm, (LEFT+156)*mm, (i+19)*mm, stroke=True, fill=False) #140,142
  
     def drawDates(self,TOP,LEFT):
         LEFT -= 90
@@ -297,24 +380,37 @@ if __name__ == "__main__":
     #provider.note = "Blablabla"
  
     item1 = Item()
-    item1.name = "Crocin "
-    item1.count = 10
-    item1.price = 122
-     
-    invoice = Invoice()
+    item1.invoiceno = "000000111 "
+    item1.patientname = "adadasdA"
+    item1.nitems = "Asas"
+    item1.paid = 3123
+    item1.total = 1221
+    
+
+    item2 = Item()
+    item2.pharmashop = "Lotus Medicals"
+    item2.itemname = "Inj. Tetanus Inj"
+    item2.batchno = "Asas"
+    item2.rate = 21.0
+    item2.quantity = 3
+    item2.amount = 1221
+    
+    invoice = DailyPdf()
     invoice.setClient(client)
     invoice.setProvider(provider)
     invoice.setTitle("Anand Medical Store")
     invoice.setVS("00001")
     invoice.setCreator(" ")
-    invoice.addItem(item1)
-    invoice.addItem(item1)
-    invoice.addItem(item1)
-    invoice.addItem(item1)
-    invoice.addItem(item1)
-    invoice.addItem(item1)
-    invoice.addItem(item1)
-    invoice.addItem(item1)
+    item_list = []
+    for i in range(40):
+        item_list.append(item1)
+    invoice.sitems = item_list
+    
+    item_list = []
+    for i in range(60):
+        item_list.append(item2)
+    invoice.pitems = item_list
+    
     invoice.date = "asdad"
  
     f = open("test.pdf", "w")

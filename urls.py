@@ -52,8 +52,8 @@ urlpatterns = patterns('',
                        
                        ( r'^ajax/', include( 'account.urls' ) ),
                        
-                       (r'^pdfstock/', 'account.secview.latex_total_stock_str'),
-                       (r'^pdfdemand/', 'account.secview.pdfdemand'),
+                       (r'^pdfstock/', 'account.pdf.printstockt'),
+                       (r'^pdfdemand/', 'account.pdf.printstockr'),
                        (r'^visual/', 'account.plots.plots'),
                        (r'^logout/', 'account.auth.logoutprocess'),
                        (r'^login/$', 'django.contrib.auth.views.login', {'template_name': 'login.html'}),
