@@ -128,15 +128,15 @@ class Invoice:
       
         #qrw =  QrCodeWidget('hello cruel world!')
         #self.pdf.add(qrw)
-        qrw = QrCodeWidget(value = "Invoice" + str(int(self.vs)), barLevel = "Q")
-        b = qrw.getBounds()
-        w=b[2]-b[0]
-        h=b[3]-b[1]
-        qr_size = 60
-        drawing = Drawing(qr_size,qr_size,transform=[float(qr_size)/w,0,0,float(qr_size)/h,0,0])
-        drawing.add(qrw)
+#        qrw = QrCodeWidget(value = "Invoice" + str(int(self.vs)), barLevel = "Q")
+#        b = qrw.getBounds()
+#        w=b[2]-b[0]
+#        h=b[3]-b[1]
+#        qr_size = 60
+#        drawing = Drawing(qr_size,qr_size,transform=[float(qr_size)/w,0,0,float(qr_size)/h,0,0])
+#        drawing.add(qrw)
         
-        renderPDF.draw(drawing, self.pdf, self.TOP+25, self.LEFT+710)
+#        renderPDF.draw(drawing, self.pdf, self.TOP+25, self.LEFT+710)
                         
 #        qrw.drawOn(self.pdf,self.TOP+45,(self.LEFT+735))
         self.drawProvider(self.TOP-8,self.LEFT+3)
