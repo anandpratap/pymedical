@@ -148,7 +148,7 @@ class YearlyPdf:
     def drawMain(self):
         # Horní lajna
         self.pdf.drawString(self.LEFT*mm, self.TOP*mm, self.title)
-        self.pdf.drawString((self.LEFT+65)*mm, self.TOP*mm, "Balace Sheet")
+        self.pdf.drawString((self.LEFT+65)*mm, self.TOP*mm, "Balance Sheet")
         self.pdf.setFont("DejaVu", 8)
         self.pdf.drawString((self.LEFT+120)*mm, (self.TOP)*mm, "Dated to: %s" % self.todate)
         self.pdf.drawString((self.LEFT+120)*mm, (self.TOP+3)*mm, "Dated from: %s" % self.fromdate)

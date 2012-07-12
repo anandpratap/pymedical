@@ -148,7 +148,7 @@ class DailyPdf:
     def drawMain(self):
         # Horní lajna
         self.pdf.drawString(self.LEFT*mm, self.TOP*mm, self.title)
-        self.pdf.drawString((self.LEFT+65)*mm, self.TOP*mm, "Daily Balace Sheet")
+        self.pdf.drawString((self.LEFT+65)*mm, self.TOP*mm, "Daily Balance Sheet")
         self.pdf.drawString((self.LEFT+120)*mm, self.TOP*mm, "Dated: %s" % self.date)
  
         # Rámečky
