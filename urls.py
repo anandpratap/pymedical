@@ -43,7 +43,7 @@ urlpatterns = patterns('',
                        (r'^credit_view_details/(?P<pid>\d+)/$', 'account.views.viewcreditdetails'),
                        (r'^invoice_view/(?P<pid>\d+)/$', 'account.views.viewinvoice'),
                        (r'^invoice_edit/(?P<pid>\d+)/$', 'account.views.editinvoice'),
-                       (r'^invoice_print/(?P<pid>\d+)/$', 'account.views.printinvoice'),
+                       
                        #(r'^invoice_search/(?P<pid>\d+)/$', 'account.views.searchinvoice'),
                        (r'^add_credit_amount/$', 'account.views.addcreditamount'),
                        (r'^expiry_view/$', 'account.views.viewexpiry'),
@@ -58,4 +58,4 @@ urlpatterns = patterns('',
                        (r'^logout/', 'account.auth.logoutprocess'),
                        (r'^login/$', 'django.contrib.auth.views.login', {'template_name': 'login.html'}),
             (r'^loginprocess/', 'account.auth.loginprocess'),
-                       )
+                       (r'^invoice_print/(?P<invoiceno>\d+)/$', 'account.pdf.printinvoice'),                       )

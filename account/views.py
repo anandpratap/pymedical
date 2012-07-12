@@ -574,7 +574,7 @@ def generate_invoice_row(i):
     stock_str += '<td>' + i.total + '</td>'
     stock_str += '<td>' + i.paid + '</td>'
     stock_str += '<td>' + str(float(i.total)-float(i.paid)) + '</td>'
-    stock_str += '<td><a href=/invoice_view/'+str(i.pk)+'/ target=_blank>view</a></td>'
+    stock_str += '<td><a href=/invoice_view/'+str(i.pk)+'/ target=_blank>view</a>/<a href=/invoice_print/'+str(i.pk)+'/ target=_blank>print</a></td>'
     stock_str += '</tr>'
     return stock_str
 

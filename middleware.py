@@ -27,6 +27,9 @@ class LoginRequiredMiddleware:
                 is_allowed = True
         if settings.STATIC_URL in path:
             is_allowed = True
+        if "invoice_view" in path:
+            is_allowed = True
+        
         if not is_allowed:
             if request.user.is_authenticated():
                 pass

@@ -34,6 +34,11 @@ $('#iview').click( function() {
        window.open('/invoice_view/'+p , '_blank');
     
     });
+$('#ipdf').click( function() {
+       p = $('#invoiceno').val();
+       window.open('/invoice_print/'+p , '_blank');
+    
+    });
 
 $('#iedit').click( function() {
        p = $('#invoiceno').val();
@@ -118,23 +123,17 @@ $('#isearch').click( function() {
 <div class="box">
 						<h2>Invoice</h2>
 					
-						<table>
-							<tbody>
-								<tr>
-								  <td>
+				
 
-<input type='integer' min='1' max='{{ maxinvoiceno }}' id='invoiceno' style='width:100px' placeholder='Invoice No.' required/> </td><td><input type="submit" name="submit" id="iview" value="View" /></td><td><input type="submit" name="submit" id="iedit" value="Edit" /></td>
+<input type='integer' min='1' max='{{ maxinvoiceno }}' id='invoiceno' style='width:270px' placeholder='Invoice No.' required/> 
+<table><tr>
+<td><input type="submit" name="submit" id="ipdf" value="PDF" /></td><td><input type="submit" name="submit" id="iedit" value="Edit" /></td><td><input type="submit" name="submit" id="iview" value="View" /><td></tr>
 </tr></table>
 
 
 
 
 
-<form >
-<span>Currently this is not working!!</span>
-<input type='date' style='width:150px'/>
-<input type='text' id='invoicesearch' style='width:150px' placeholder='Search' required/> </td><td><input type="submit" name="submit" id="isearch" value="Search" />
-</form>
 
 </div>
 				
