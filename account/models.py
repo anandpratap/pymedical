@@ -60,6 +60,17 @@ class tablets(models.Model):
         self.navailable -= quant
         self.save()
 
+class dateobject(models.Model):
+    date = models.DateTimeField("Date")
+    def __unicode__(self):
+        return self.date.ctime()
+class purchase(models.Model):
+    tab = models.ForeignKey(tablets, blank=False, null=False)
+    nitems = models.IntegerField(default=0)
+    pharmashop = models.ForeignKey(pharmashop, blank=False, null=False)
+    date = models.ForeignKey(dateobject, blank=False, null=False)
+
+
 class invoiceitem(models.Model):
     tab = models.ForeignKey(tablets, blank=False, null=False)
     nitems = models.IntegerField(default=0)
@@ -72,6 +83,7 @@ class invoiceitem(models.Model):
 
 
 class invoice(models.Model):
+    date = models.ForeignKey(dateobject, blank=False, null=False)
     tab = models.ManyToManyField(invoiceitem)
     invoice_no = models.CharField(max_length=10)
     patient = models.ForeignKey(patient, blank=False, null=False)

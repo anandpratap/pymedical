@@ -22,5 +22,7 @@ admin.site.register(pharmashop)
 admin.site.register(invoice)
 admin.site.register(invoiceitem)
 admin.site.register(patient)
+admin.site.register(purchase)
+admin.site.register(dateobject)
 
 

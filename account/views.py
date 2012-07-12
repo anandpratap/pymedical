@@ -6,7 +6,7 @@ from django import http
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login,logout
 #App import                                                                     
-from models import tablets, invoice, pharmashop, stockform, medicine, medicinefirm, medicinetype, medicineform, medicinetypeform, medicinefirmform, pharmaform, patient, search_form, credit_form, expiry_form
+from models import*
 import settings
 #python import                                                                  
 import datetime
@@ -14,7 +14,7 @@ import os, sys
 import urllib
 from search import*
 from utils import*
-
+from secview import*
 
 def addinvoice(request):
     item = "["
@@ -172,9 +172,16 @@ def readform(request):
         
     medicine_str = ""
     for i in medicine_des:
-        medicine_str += i + "&&&" 
+        medicine_str += i + "&&&"
+    tmpdate = invoicedate_to_date(invoice_date)
     if is_ok:
-        tmp_invoice = invoice(invoice_no=invoice_no, patient=patient_, invoice_date=invoice_date, nmedicine=n_medicine, medicine_str=medicine_str, total=total, paid=paid)
+        try:
+            dateob = dateobject.objects.get(date=tmpdate)
+        except:
+            dateob = dateobject(date=tmpdate)
+            dateob.save()
+        
+        tmp_invoice = invoice(invoice_no=invoice_no, patient=patient_, invoice_date=invoice_date, nmedicine=n_medicine, medicine_str=medicine_str, total=total, paid=paid,date=dateob)
         tmp_invoice.date_created = datetime.datetime.now()
         tmp_invoice.date_last_modified = datetime.datetime.now()
         tmp_invoice.save()
@@ -239,17 +246,40 @@ def addstockprocess(request):
                     i.revision_history += nmedicine + "___" + datetime.datetime.now().ctime() +"___" + pharma_shop + "&&&"
                     i.save()
                     is_found = True
-                    
+                    print pharma_shop
+                    pharma__shop = pharmashop.objects.filter(name=pharma_shop)[0]
+                    try:
+                        dateob = dateobject.objects.get(date=datetime.date.today())
+                    except:
+                        dateob = dateobject(date=datetime.date.today())
+                        dateob.save()
+                        
+                    tmpp = purchase(tab=i,nitems=int(nmedicine),date=dateob, pharmashop=pharma__shop)
+                    tmpp.save()
+
                
         if len(tab_list) == 0 or is_found == False:
             for j in pharmashop.objects.all():
                 if j.name.upper().replace(" ","") == \
                         pharma_shop.upper().replace(" ",""):
                     pharma__shop = j
+                
+            try:
+                dateob = dateobject.objects.get(date=datetime.date.today())
+            except:
+                dateob = dateobject(date=datetime.date.today())
+                dateob.save()
+
+
+            
 
             tmp_tablet = tablets(tag=tag, expiry_date=expiry_date, purchased_date=datetime.datetime.now(), batch_no=batch_no, actual_price=actual_price, printed_price=printed_price,navailable=int(nmedicine), vat=vat, pharma_shop=pharma__shop)
             tmp_tablet.revision_history += nmedicine + "___" + datetime.datetime.now().ctime() +"___" + pharma_shop + "&&&"
             tmp_tablet.save()
+            tmpp = purchase(tab=tmp_tablet,nitems=int(nmedicine),date=dateob,\
+                                pharmashop=pharma__shop)
+            tmpp.save()
+
         return HttpResponseRedirect('/stock_add')
     else:
         return HttpResponseRedirect('/')
@@ -509,6 +539,16 @@ def editstockprocess(request):
                     i.revision_history += str(tmp_n) + "___" + datetime.datetime.now().ctime() + "___" + pharma_shop +  "&&&"
                     i.navailable = int(nmedicine)
                     i.save()
+                    pharma__shop = pharmashop.objects.filter(name=pharma_shop)[0]
+                    try:
+                        dateob = dateobject.objects.get(date=datetime.date.today())
+                    except:
+                        dateob = dateobject(date=datetime.date.today())
+                        dateob.save()
+                        
+                    tmpp = purchase(tab=i,nitems=int(tmp_n),date=dateob, pharmashop=pharma__shop)
+                    tmpp.save()
+
                     tmptmp = i
                
         return HttpResponseRedirect('/stock_edit/'+str(tmptmp.pk)+'/')
