@@ -3,7 +3,13 @@
 import inflect 
 import os, datetime
 from reportlab.pdfgen.canvas import Canvas
- 
+from reportlab.graphics.barcode.qr import QrCodeWidget
+
+from reportlab.graphics.shapes import Drawing
+
+from reportlab.graphics import renderPDF
+
+
 from reportlab.lib.pagesizes import letter, A4
 from reportlab.lib.units import cm, mm, inch, pica
 from reportlab.pdfbase.ttfonts import TTFont
@@ -117,9 +123,22 @@ class Invoice:
     def getContent(self):
         # Texty
         self.drawMain()
-        barcode=code39.Extended39("inv"+str(int(self.vs)),barWidth=0.5*mm,barHeight=5*mm)
-        barcode.drawOn(self.pdf,self.TOP+45,(self.LEFT+735))
+#        barcode=code39.Extended39("inv"+str(int(self.vs)),barWidth=0.5*mm,barHeight=5*mm)
+#        barcode.drawOn(self.pdf,self.TOP+45,(self.LEFT+735))
       
+        #qrw =  QrCodeWidget('hello cruel world!')
+        #self.pdf.add(qrw)
+        qrw = QrCodeWidget(value = "Invoice" + str(int(self.vs)), barLevel = "Q")
+        b = qrw.getBounds()
+        w=b[2]-b[0]
+        h=b[3]-b[1]
+        qr_size = 60
+        drawing = Drawing(qr_size,qr_size,transform=[float(qr_size)/w,0,0,float(qr_size)/h,0,0])
+        drawing.add(qrw)
+        
+        renderPDF.draw(drawing, self.pdf, self.TOP+25, self.LEFT+710)
+                        
+#        qrw.drawOn(self.pdf,self.TOP+45,(self.LEFT+735))
         self.drawProvider(self.TOP-8,self.LEFT+3)
 #        self.drawClient(self.TOP-30,self.LEFT+91)
         self.drawPayment(self.TOP-26,self.LEFT+3)
