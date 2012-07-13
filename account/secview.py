@@ -79,23 +79,16 @@ def dailycps(date):
     sale = 0.0
     credit = 0.0
     #calc purchase
-        
-    for i in tablets.objects.all():
-        for j in i.revision_history.split("&&&")[:-1]:
-            _date = time.strptime(j.split('___')[1])
-            _date = datetime.datetime(*_date[0:6])
-            if matchdate(_date, date):
-                purchase += float(j.split('___')[0])*float(i.actual_price)
-    match_found = False
-    for i in invoice.objects.order_by('invoice_date'):
-        _date = invoicedate_to_date(i.invoice_date)
-        if matchdate(_date, date):
-            match_found = True
+    try:
+        dateob = dateobject.objects.get(date=date)
+        for i in dateob.purchase_set.all():
+            purchase += i.nitems*float(i.tab.actual_price)
+        for i in dateob.invoice_set.all():
             sale += float(i.total)
             credit += float(i.total) - float(i.paid)
-        else:
-            if match_found == True:
-                break
+    except:
+        pass
+        
     return [credit, purchase, sale]
 
 def get_firm_list():
@@ -109,7 +102,7 @@ def get_firm_list():
     return tmp
 
 def statistics(request):
-    dailystats = dailycps(datetime.datetime.now())
+    dailystats = dailycps(datetime.date.today())
     firmlist = get_firm_list()
     return render_to_response('stats.html',{'dailystats':dailystats,'firmlist':firmlist})
 
@@ -130,8 +123,9 @@ def send_monthly_account(request):
         results = [0, 0, 0]
         for i in range(ndays):
             _date = datetime.date(day=i+1, month=month, year=year)
+            tmp = dailycps(_date)
             for j in range(3):
-                results[j] += dailycps(_date)[j]
+                results[j] += tmp[j]
         return render_to_response( 'daily_account.html', { 'results': results, }) 
     
 
