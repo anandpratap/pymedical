@@ -103,6 +103,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'medical.middleware.LoginRequiredMiddleware',
+    'medical.middleware.ProfileMiddleware',
 
 )
 
