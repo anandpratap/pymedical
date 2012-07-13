@@ -88,14 +88,14 @@ def dailycps(date):
     profit = 0.0
     #calc purchase
     try:
-        dateob = dateobject.objects.get(date=date)
-        for i in dateob.purchase_set.all():
+        dateob = dateobject.objects.select_related().get(date=date)
+        for i in dateob.purchase_set.select_related().all():
             purchase += i.nitems*float(i.tab.actual_price)
-        for i in dateob.invoice_set.all():
+        for i in dateob.invoice_set.select_related().all():
             sale += float(i.total)
             credit += float(i.total) - float(i.paid)
             profit += invoiceprofitcalculator(i.pk)
-        for i in dateob.creditobject_set.all():
+        for i in dateob.creditobject_set.select_related().all():
             credit -= float(i.amount)
     except:
         pass
@@ -152,7 +152,7 @@ def daterange(start_date, end_date):
 def firmstats(request):
     if request.is_ajax():
         q = request.GET.get('q')
-        med = medicinefirm.objects.get(pk=int(q)).medicine_set.all()
+        med = medicinefirm.objects.get(pk=int(q)).medicine_set.select_related().all()
         
       
         avail = 0.0

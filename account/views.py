@@ -34,8 +34,8 @@ def addinvoice(request):
         invoiceno = '1'
     for i in range(10-len(invoiceno)):
         invoiceno = "0" + invoiceno
-    
-    for i in tablets.objects.select_related().all().order_by('tag__name'):
+    tab = list(tablets.objects.select_related().all().order_by('tag__name'))
+    for i in tab:
         if i.navailable > 0:
             item += "'" + i.tag.medicinetype.name[:3]+ ". " + i.__unicode__() + "'" 
             price += "'" + i.printed_price + "'" 
@@ -51,7 +51,8 @@ def addinvoice(request):
             year += ","
             month += str(i.expiry_date.month) 
             month += ","
-    for i in patient.objects.all().order_by('name'):    
+    pat = list(patient.objects.select_related().all().order_by('name'))
+    for i in pat:
         patient_ += "'" + str(i.__unicode__().replace('\n','')) + "'" 
         patient_ += ","
         phone_ += "'" + str(i.telephone) + "'" 
@@ -486,7 +487,8 @@ def generate_patient_row(i):
 
 def viewstock(request):
     stock_str = ''
-    for i in tablets.objects.order_by('tag__name'):
+    tab = list(tablets.objects.select_related().order_by('tag__name'))
+    for i in tab:
         if i.navailable > 0:
             stock_str += generate_stock_row(i)
     return render_to_response('stockview.html',{'stock_str':stock_str})
@@ -562,7 +564,7 @@ def searchlist(request):
         form = search_form(request.POST)
         if form.is_valid():
             query = form.data.get('query')
-            t = tablets.objects.order_by('tag')
+            t = tablets.objects.select_related().order_by('tag')
             b = get_results(t, query, ['tag.name','batch_no','tag.medicinefirm.name'])
             stock_str = 'Displaying search results for <b>'+query+'</b> <br>Go back to <a href=/stock_view/>stock view</a><br>'
             if len(b) != 0:
@@ -580,7 +582,7 @@ def searchlist_patient(request):
         form = search_form(request.POST)
         if form.is_valid():
             query = form.data.get('query')
-            t = patient.objects.order_by('name')
+            t = patient.objects.select_related().order_by('name')
             b = get_results(t, query, ['name','telephone'])
             stock_str = 'Displaying search results for <b>'+query+'</b> <br>Go back to <a href=/credit_view/>credit view</a><br>'
             if len(b) != 0:
@@ -597,7 +599,7 @@ def searchlist_patient(request):
 
 def viewcredit(request):
     stock_str = ''
-    for i in patient.objects.all():
+    for i in patient.objects.select_related().all():
         tmp = generate_patient_row(i)
         if tmp[1] > 5.0:
             stock_str += tmp[0]
@@ -728,7 +730,8 @@ def viewexpiry(request):
             ftime = datetime.datetime.now() + datetime.timedelta(days=nday)
             info = "Medicines expiring before <b>" + ftime.date().ctime().replace("00:00:00 ","") + "</b>"
             is_date = False
-            for i in tablets.objects.order_by('expiry_date'):
+            tab = list(tablets.objects.select_related().order_by('expiry_date'))
+            for i in tab:
                 if i.expiry_date.date() < ftime.date():
                     if i.navailable > 0:
                         is_date = True
@@ -882,9 +885,9 @@ def generate_demand_row(name, quan, pk):
 
 def viewdemand(request):
     stock_str = ''
-    for i in medicine.objects.order_by('medicinetype__name'):
-        tmp_tab = i.tablets_set.all()
-        
+    med = list(medicine.objects.select_related().order_by('medicinetype__name'))
+    for i in med:
+        tmp_tab = list(i.tablets_set.select_related().all())        
         count = 0
         for j in tmp_tab:
             count += j.navailable
