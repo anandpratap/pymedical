@@ -147,10 +147,10 @@ update_quantity();
 
 
 function save_cookie() {
-$.cookie('invoiceno', $(document).find("#invoice").val(), { expires: 7, path: '/' });
+$.cookie('invoiceno', $(document).find("#invoice").html(), { expires: 7, path: '/' });
 $.cookie('patientname', $(document).find("#customer-title").val(), { expires: 7, path: '/' });
 $.cookie('patient_telephone', $(document).find("#customer-phone").val(), { expires: 7, path: '/' });
-$.cookie('date', $(document).find("#date").val(), { expires: 7, path: '/' });
+$.cookie('date', $(document).find("#date").html(), { expires: 7, path: '/' });
 $.cookie('total', $("#total").html().replace("Rs.",""), { expires: 7, path: '/' });
 $.cookie('paid', $(document).find("#paid").val().replace("Rs.",""), { expires: 7, path: '/' });
 
@@ -169,7 +169,7 @@ $('.item-row').each(function(i){
     tmp = "";			   
     item_name = $(this).find('.item-name').val();
 
-    batch_no = $(this).find('.batch').val();
+    batch_no = $(this).find('.batch').html();
     quantity_ = $(this).find('.quantity').val();
 if(item_name != "" || quantity_ != ""){
     tmp += item_name + "___" + batch_no + "___" + quantity_;
@@ -214,8 +214,8 @@ $.cookie('lasttime', tttime, { expires: 7, path: '/' });
 
 function update_vat() {
   var row = $(this).parents('.item-row');
-  //row.find('.price').val().replace("$","") * row.find('.vat').val() +
-    var amount = row.find('.cost').val().replace("Rs. ","") * row.find('.quantity').val()*(1 + row.find('.vat').val().replace("Rs. ","")/100.0);
+  
+    var amount = row.find('.cost').html().replace("Rs. ","") * row.find('.quantity').val()*(1 + row.find('.vat').html().replace("Rs. ","")/100.0);
   amount = roundNumber(amount,2);
   isNaN(amount) ? row.find('.amount').html("N/A") : row.find('.amount').html("Rs. "+amount);
 update_total();
@@ -231,7 +231,7 @@ function update_balance() {
 
 function update_price() {
   var row = $(this).parents('.item-row');
-  var price = row.find('.cost').val().replace("Rs. ","") * row.find('.quantity').val();
+  var price = row.find('.cost').html().replace("Rs. ","") * row.find('.quantity').val();
   price = roundNumber(price,2);
  
   isNaN(price) ? row.find('.price').html("N/A") : row.find('.price').html("Rs. "+price);
@@ -264,9 +264,9 @@ var row = $(this).closest('tr.item-row');
  for(var i=0; i<vitem.length; i++) {
  if (vitem[i] == itemname) 
 {
-row.find('.batch').val(vbatch[i]);
-row.find('.cost').val(vprice[i]);
-row.find('.vat').val(vvat[i]);
+row.find('.batch').html(vbatch[i]);
+row.find('.cost').html(vprice[i]);
+row.find('.vat').html(vvat[i]);
  row.find('.item-name').val(vmname[i]);
 
 
@@ -345,7 +345,7 @@ function bind() {
 
 
 $(document).ajaxStop(function() {
-$(document).find("#lasttime").val($.cookie('lasttime')/1000.0+ ' s');
+$(document).find("#lasttime").html($.cookie('lasttime')/1000.0+ ' s');
   $("textarea#autocomplete").autocomplete({
       source: {% autoescape off %}{{ item }}{% endautoescape%}
   });
@@ -364,7 +364,7 @@ $(document).find("#lasttime").val($.cookie('lasttime')/1000.0+ ' s');
 
    
   $("#addrow").click(function(){
-    $(".item-row:last").after('<tr class="item-row"><td><div class="delete-wpr"><textarea class="item-name" id="autocomplete"></textarea><a class="delete" href="javascript:;" title="Remove row">X</a></div></td><td><textarea class="batch" readonly="readonly"></textarea></td><td><textarea class="cost" readonly="readonly"></textarea></td><td><textarea class="quantity"></textarea></td><td><span class="price"></span></td><td><textarea class="vat" readonly="readonly"></textarea></td><td><span class="amount"></span></td></tr>');
+    $(".item-row:last").after('<tr class="item-row"><td><div class="delete-wpr"><textarea class="item-name" id="autocomplete"></textarea><a class="delete" href="javascript:;" title="Remove row">X</a></div></td><td><span class="batch" readonly="readonly"></span></td><td><span class="cost" readonly="readonly"></span></td><td><textarea class="quantity"></textarea></td><td><span class="price"></span></td><td><span class="vat" readonly="readonly"></span></td><td><span class="amount"></span></td></tr>');
     if ($(".delete").length > 0) $(".delete").show();
     bind();
  $("textarea#autocomplete").autocomplete({
@@ -404,7 +404,7 @@ $(document).find("#lasttime").val($.cookie('lasttime')/1000.0+ ' s');
     $("#logo").removeClass('edit');
   });
   
-  $("#date").val(print_today());
+  $("#date").html(print_today());
 
   $("p").text("The DOM is now loaded and can be manipulated.JS");
 
@@ -418,7 +418,7 @@ $(document).find("#lasttime").val($.cookie('lasttime')/1000.0+ ' s');
 
 
 $(document).ready(function() {
-			      $(document).find("#lasttime").val($.cookie('lasttime')/1000.0+ ' s');
+			      $(document).find("#lasttime").html($.cookie('lasttime')/1000.0+ ' s');
   $("textarea#autocomplete").autocomplete({
       source: {% autoescape off %}{{ item }}{% endautoescape%}
   });
@@ -437,7 +437,7 @@ $(document).ready(function() {
 
    
   $("#addrow").click(function(){
-    $(".item-row:last").after('<tr class="item-row"><td><div class="delete-wpr"><textarea class="item-name" id="autocomplete"></textarea><a class="delete" href="javascript:;" title="Remove row">X</a></div></td><td><textarea class="batch" readonly="readonly"></textarea></td><td><textarea class="cost" readonly="readonly"></textarea></td><td><textarea class="quantity"></textarea></td><td><span class="price"></span></td><td><textarea class="vat" readonly="readonly"></textarea></td><td><span class="amount"></span></td></tr>');
+    $(".item-row:last").after('<tr class="item-row"><td><div class="delete-wpr"><textarea class="item-name" id="autocomplete"></textarea><a class="delete" href="javascript:;" title="Remove row">X</a></div></td><td><span class="batch" readonly="readonly"></span></td><td><span class="cost" readonly="readonly"></span></td><td><textarea class="quantity"></textarea></td><td><span class="price"></span></td><td><span class="vat" readonly="readonly"></span></td><td><span class="amount"></span></td></tr>');
     if ($(".delete").length > 0) $(".delete").show();
     bind();
  $("textarea#autocomplete").autocomplete({
@@ -477,7 +477,7 @@ $(document).ready(function() {
     $("#logo").removeClass('edit');
   });
   
-  $("#date").val(print_today());
+  $("#date").html(print_today());
 
   $("p").text("The DOM is now loaded and can be manipulated.JS");
 
@@ -503,41 +503,42 @@ function setFocus()
 <body onload="setFocus()">
 
 	<div id="page-wrap">
-
 		<textarea id="header" readonly="readonly">Anand Medical Store</textarea>
-		
-<!--		<div id="identity">
-		
-            <textarea id="address" readonly="readonly">Anand Medical Store
-Opposite of Bank of India,
-Kurawar Mandi, Dist. Rajgarh 465667,
 
-Phone: (07375)    244340 </textarea>
--->
+
 		
 		<div style="clear:both"></div>
 		
 		<div id="customer">
+		  <table style="border-collapse: collapse;border-style:hidden;" id="ga">
+		    <tr>
+		      <td height=30></td>
+		      <td width=55 rowspan=3></td>
+		      <td rowspan=3><img src=/static/ganesha.gif width=80 height=80/></td>
+		    </tr>
+		    
+		    <tr>
+		      <td rowspan=2> <textarea id="customer-title" placeholder="Name"></textarea></td>
+		    </tr><tr></tr><tr><td><textarea id="customer-phone" placeholder="Telephone"></textarea></td><tr>
+</table>
 
-            <textarea id="customer-title" placeholder="Name"></textarea>
-	    <textarea id="customer-phone" placeholder="Telephone"></textarea>
-
-            <table id="meta">
+ <table id="meta">
 
                 <tr>
                     <td class="meta-head">Last Time</td>
-                    <td><textarea id="lasttime" readonly="readonly"></textarea></td>
+                    <td><span id="lasttime" readonly="readonly"></span></td>
                 </tr>
 
-
+<!--</table><table id="meta">-->
 
                 <tr>
                     <td class="meta-head">Invoice #</td>
-                    <td><textarea id="invoice"  readonly="readonly">{% autoescape off %}{{ invoiceno }}{% endautoescape%}</textarea></td>
+                    <td><span id="invoice"  readonly="readonly">{% autoescape off %}{{ invoiceno }}{% endautoescape%}</span></td>
                 </tr>
+<!--</table><table id="meta">-->
                 <tr>
                     <td class="meta-head">Date</td>
-                    <td><textarea id="date" readonly="readonly">December 15, 2009</textarea></td>
+                    <td><span id="date" readonly="readonly">December 15, 2009</span></td>
                 </tr>
                 <!--<tr>
                     <td class="meta-head">Amount Due</td>
@@ -562,43 +563,41 @@ Phone: (07375)    244340 </textarea>
 		  
 		  <tr class="item-row">
 		      <td><div class="delete-wpr"><textarea class="item-name" id="autocomplete" accesskey="a"></textarea><a class="delete" href="javascript:;" title="Remove row">X</a></div></td>
-		      <td><textarea class="batch"  readonly="readonly"></textarea></td>
-		      <td><textarea class="cost"  readonly="readonly"></textarea></td>
+		      <td><span class="batch"  readonly="readonly"></span></td>
+		      <td><span class="cost"  readonly="readonly"></span></td>
 		      <td><textarea class="quantity"></textarea></td>
 		      <td><span class="price"></span></td>
-		      <td><textarea class="vat"  readonly="readonly"></textarea></td>
+		      <td><span class="vat"  readonly="readonly"></span></td>
 		      <td><span class="amount"></span></td>
 		  </tr>
-		  <tr class="item-row">
+	<tr class="item-row">
 		      <td><div class="delete-wpr"><textarea class="item-name" id="autocomplete" accesskey="a"></textarea><a class="delete" href="javascript:;" title="Remove row">X</a></div></td>
-		      <td><textarea class="batch"  readonly="readonly"></textarea></td>
-		      <td><textarea class="cost"  readonly="readonly"></textarea></td>
+		      <td><span class="batch"  readonly="readonly"></span></td>
+		      <td><span class="cost"  readonly="readonly"></span></td>
 		      <td><textarea class="quantity"></textarea></td>
 		      <td><span class="price"></span></td>
-		      <td><textarea class="vat"  readonly="readonly"></textarea></td>
+		      <td><span class="vat"  readonly="readonly"></span></td>
 		      <td><span class="amount"></span></td>
 		  </tr>
-		  <tr class="item-row">
+	<tr class="item-row">
 		      <td><div class="delete-wpr"><textarea class="item-name" id="autocomplete" accesskey="a"></textarea><a class="delete" href="javascript:;" title="Remove row">X</a></div></td>
-		      <td><textarea class="batch"  readonly="readonly"></textarea></td>
-		      <td><textarea class="cost"  readonly="readonly"></textarea></td>
+		      <td><span class="batch"  readonly="readonly"></span></td>
+		      <td><span class="cost"  readonly="readonly"></span></td>
 		      <td><textarea class="quantity"></textarea></td>
 		      <td><span class="price"></span></td>
-		      <td><textarea class="vat"  readonly="readonly"></textarea></td>
+		      <td><span class="vat"  readonly="readonly"></span></td>
 		      <td><span class="amount"></span></td>
 		  </tr>
-		  <tr class="item-row">
+	<tr class="item-row">
 		      <td><div class="delete-wpr"><textarea class="item-name" id="autocomplete" accesskey="a"></textarea><a class="delete" href="javascript:;" title="Remove row">X</a></div></td>
-		      <td><textarea class="batch"  readonly="readonly"></textarea></td>
-		      <td><textarea class="cost"  readonly="readonly"></textarea></td>
+		      <td><span class="batch"  readonly="readonly"></span></td>
+		      <td><span class="cost"  readonly="readonly"></span></td>
 		      <td><textarea class="quantity"></textarea></td>
 		      <td><span class="price"></span></td>
-		      <td><textarea class="vat"  readonly="readonly"></textarea></td>
+		      <td><span class="vat"  readonly="readonly"></span></td>
 		      <td><span class="amount"></span></td>
 		  </tr>
-		 
-		 
-		  
+	
 
 
 		  
@@ -638,6 +637,7 @@ Phone: (07375)    244340 </textarea>
 		  <span>&copy 2012 Anand Pratap Singh</span>
 		</div>
 	
+
 	</div>
 	
 </body>
