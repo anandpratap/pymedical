@@ -35,7 +35,7 @@ def addinvoice(request):
     for i in range(10-len(invoiceno)):
         invoiceno = "0" + invoiceno
     
-    for i in tablets.objects.all().order_by('tag__name'):
+    for i in tablets.objects.select_related().all().order_by('tag__name'):
         if i.navailable > 0:
             item += "'" + i.tag.medicinetype.name[:3]+ ". " + i.__unicode__() + "'" 
             price += "'" + i.printed_price + "'" 
