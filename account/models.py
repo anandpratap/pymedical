@@ -99,6 +99,13 @@ class invoice(models.Model):
     def __unicode__(self):
         return self.invoice_no
 
+class creditobject(models.Model):
+    amount = models.CharField(max_length=10)
+    date = models.ForeignKey(dateobject, blank=False, null=False)
+    patient = models.ForeignKey(patient, blank=False, null=False)
+    def __unicode__(self):
+        return self.patient.name
+
 class stockform(forms.Form):
     tag_name = forms.CharField(max_length=100)
     batch_no = forms.CharField(max_length=20)

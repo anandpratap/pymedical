@@ -72,12 +72,20 @@ def matchdate(a, b):
                 is_match = True
     return is_match
 
+def invoiceprofitcalculator(pk):
+    i = invoice.objects.get(pk=pk)
+    tab = i.tab.all()
+    tmp = 0.0
+    for j in tab:
+        tmp += (float(j.tab.printed_price)-float(j.tab.actual_price))*j.nitems
+    return tmp
 
 def dailycps(date):
     #return [credit, purchase, sale]
     purchase = 0.0
     sale = 0.0
     credit = 0.0
+    profit = 0.0
     #calc purchase
     try:
         dateob = dateobject.objects.get(date=date)
@@ -86,10 +94,13 @@ def dailycps(date):
         for i in dateob.invoice_set.all():
             sale += float(i.total)
             credit += float(i.total) - float(i.paid)
+            profit += invoiceprofitcalculator(i.pk)
+        for i in dateob.creditobject_set.all():
+            credit -= float(i.amount)
     except:
         pass
         
-    return [credit, purchase, sale]
+    return [credit, purchase, sale, profit]
 
 def get_firm_list():
     tmp = "<select name='query' id='ffield' width='10' >"
@@ -120,11 +131,11 @@ def send_monthly_account(request):
         year = _date.year
         month = _date.month
         ndays = calendar.monthrange(year,month)[1]
-        results = [0, 0, 0]
+        results = [0, 0, 0, 0]
         for i in range(ndays):
             _date = datetime.date(day=i+1, month=month, year=year)
             tmp = dailycps(_date)
-            for j in range(3):
+            for j in range(4):
                 results[j] += tmp[j]
         return render_to_response( 'daily_account.html', { 'results': results, }) 
     

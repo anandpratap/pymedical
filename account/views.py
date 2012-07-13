@@ -58,10 +58,8 @@ def addinvoice(request):
         phone_ += ","
         patient_name += "'" + str(i.name.replace('\n','')) + "'" 
         patient_name += ","
-        if i.credit_paid.replace(' ','') == '':
-            credit += "'" + str(float(i.balance) )+ "'"
-        else:
-            credit += "'" + str(float(i.balance) - float(i.credit_paid) ) + "'"
+        credit += "'" + str(float(i.balance))+ "'"
+        
         credit += ","
     item += "]"
     price += "]"
@@ -188,6 +186,8 @@ def readform(request):
         tmp_invoice.tab = items_list
         del items_list
         tmp_invoice.save()
+        patient_.balance = (float(patient_.balance) + float(total)-float(paid))
+        patient_.save()
         try:
             invoiceno = str(invoice.objects.order_by('-pk')[0].pk + 1)
         except:
@@ -443,8 +443,8 @@ def profit_calculator():
     for i in invoice.objects.all():
         credit += float(i.total) - float(i.paid)
     for i in patient.objects.all():
-        if i.credit_paid != "":
-            credit -= float(i.credit_paid)
+        for j in i.creditobject_set.all():
+            credit -= float(j.amount)
     return [sale, purchase, stock, credit]
 def dash(request):
     sale, purchase, stock, credit = profit_calculator()
@@ -475,11 +475,8 @@ def generate_patient_row(i):
     stock_str += '<td>' + i.telephone + '</td>'
     
     tmp_invoice = i.invoice_set.all()
-    credit = 0.0
-    if i.credit_paid != '':
-        credit = -float(i.credit_paid)
-    for j in tmp_invoice:
-        credit += float(j.total) - float(j.paid) 
+    credit = float(i.balance)
+   
     
     stock_str += '<td>Rs. ' + str(credit) + '</td>'
     stock_str += '<td><a href=/credit_view_details/'+str(i.pk)+'/>view</a></td>'
@@ -640,13 +637,9 @@ def viewcreditdetails(request, pid):
     stock_str += '<hr><tr><td>Credit Paid</td><td>'
     stock_str += tmp_patient.credit_paid
     stock_str += '</td><td></td><td>To be Paid</td><td>'
-    credit = 0.0 
-    for i in tmp_invoices:
-        credit += float(i.total)-float(i.paid)
-    if tmp_patient.credit_paid == '':
-        stock_str += str(credit) + '</td><td></td></tr>'
-    else:
-        stock_str += str(credit - float(tmp_patient.credit_paid)) + '</td><td></td></tr>'
+    credit = float(tmp_patient.balance)
+    stock_str += str(credit) + '</td><td></td></tr>'
+    
     return render_to_response('creditviewdetails.html',{'invoice_str':stock_str, 'patient':tmp_patient,'credit_history':tmp_history})
 
 def viewinvoice(request, pid):
@@ -701,7 +694,15 @@ def addcreditamount(request):
             else:
                 tmp_patient.credit_paid = str(float(tmp_patient.credit_paid) + float(amount))
             tmp_patient.credit_history += amount + "___" + stime + "&&&"
+            tmp_patient.balance = str(float(tmp_patient.balance) - float(amount))
             tmp_patient.save()
+            try:
+                dateobj = dateobject.objects.get(date=datetime.date.today())
+            except:
+                dateobj = dateobject(date=datetime.date.today())
+                dateobj.save()
+            tmp = creditobject(amount=amount,patient=tmp_patient,date=dateobj)
+            tmp.save()
             return HttpResponseRedirect('/credit_view_details/'+pid+'/')
 
 def generate_small_stock_row(i):

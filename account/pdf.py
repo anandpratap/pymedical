@@ -74,38 +74,26 @@ def printdaily(request):
     q = querydate_to_date(request.GET.get('q'))
     _invoice = DailyPdf()
     item_list = []
-    for i in invoice.objects.order_by('invoice_date'):
-        _date = invoicedate_to_date(i.invoice_date)
-        if matchdate(_date, q):
-            item = Item()
-            item.invoiceno = i.invoice_no
-            item.patientname = i.patient.name
-            item.nitems = int(i.nmedicine)
-            item.paid = float(i.paid)
-            item.total = float(i.total)
-            item_list.append(item)
+    _date = dateobject.objects.get(date=q)
+    for i in _date.invoice_set.all():
+        item = Item()
+        item.invoiceno = i.invoice_no
+        item.patientname = i.patient.name
+        item.nitems = int(i.nmedicine)
+        item.paid = float(i.paid)
+        item.total = float(i.total)
+        item_list.append(item)
     _invoice.sitems = item_list
     item_list = []
-    for i in tablets.objects.order_by('tag__name'):
-        t = i.revision_history.split('&&&')
-        for j in t[:-1]:
-            deta = j.split('___')
-            try:
-                mname = deta[2]
-            except:
-                pass
-            mquan = deta[0]
-            mday = deta[1]
-            _date = ctime_to_date(mday)
-            if matchdate(q, _date):
-                item = Item()
-                item.pharmashop = mname
-                item.itemname = i.tag.name
-                item.batchno = i.batch_no
-                item.quantity = int(mquan)
-                item.rate = i.actual_price
-                item.amount = int(mquan)*float(i.actual_price)
-                item_list.append(item)
+    for i in _date.purchase_set.all():
+        item = Item()
+        item.pharmashop = i.pharmashop
+        item.itemname = i.tab.tag.name
+        item.batchno = i.tab.batch_no
+        item.quantity = i.nitems
+        item.rate = i.tab.actual_price
+        item.amount = i.nitems*float(i.tab.actual_price)
+        item_list.append(item)
     _invoice.pitems = item_list
 
     _invoice.setClient(client)

@@ -24,5 +24,6 @@ admin.site.register(invoiceitem)
 admin.site.register(patient)
 admin.site.register(purchase)
 admin.site.register(dateobject)
+admin.site.register(creditobject)
 
 
