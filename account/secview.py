@@ -152,21 +152,28 @@ def daterange(start_date, end_date):
 def firmstats(request):
     if request.is_ajax():
         q = request.GET.get('q')
-        med = medicinefirm.objects.get(pk=int(q)).medicine_set.select_related().all()
-        
-      
+        r = querydate_to_date(request.GET.get('r'))
+        s = querydate_to_date(request.GET.get('s'))
+        date_range = daterange(r,s)
         avail = 0.0
         sold = 0.0
         purc = 0.0
-        for i in med:
-            tab = i.tablets_set.all()
-            for j in tab:
-                avail += float(j.navailable)*float(j.actual_price)
-                purc += (float(j.navailable)+float(j.nsold))*float(j.actual_price)
-                sold += float(j.nsold)*float(j.printed_price)
+        pk = int(q)
+        for i in date_range:
+            dateobj = dateobject.objects.select_related().get(date=i)
+            purchase = dateobj.purchase_set.select_related().all()
+            for j in purchase:
+                if int(j.tab.tag.medicinefirm.pk) == pk:
+                    purc += (float(j.nitems))*float(j.tab.actual_price)
+                    
+            sale = dateobj.invoice_set.select_related().all()
+            for j in sale:
+                for k in j.tab.all():
+                    if int(k.tab.tag.medicinefirm.pk) == pk:
+                        sold += float(k.nitems)*float(k.tab.printed_price)
                 
 
 
-        results = [avail, purc, sold]
+        results = [purc, sold]
         return render_to_response( 'firmstats.html', { 'results': results, }) 
 

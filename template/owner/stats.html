@@ -52,7 +52,9 @@ $('#mresults').html('&nbsp;').load('{% url ajax_monthly_account %}?q=' + current
 
 $('#fsubmit').click( function() {
        q = $('#ffield').val().replace(" ","");
-       $('#fresults').html('&nbsp;').load('{% url ajax_firm_stats %}?q=' + q );
+       r = $('#c1field').val();
+       s = $('#c2field').val();
+       $('#fresults').html('&nbsp;').load('{% url ajax_firm_stats %}?q=' + q+"&r="+r+"&s="+s );
     
     });
 
@@ -161,7 +163,9 @@ $('#bsubmit').click( function() {
 				       <h2>Company Stats</h2>
 				       <div class="utils">
 
-{% autoescape off %}{{ firmlist }}{% endautoescape %}
+{% autoescape off %}{{ firmlist }}{% endautoescape %}<br>
+<input type="date" name="query" id="c1field"  style="width:200px"/><br>
+<input type="date" name="query" id="c2field"  style="width:200px"/>
 <!--					 <input type="text" name="query" id="ffield"  style="width:200px"/> -->         
 					 <input type="submit" name="submit" id="fsubmit" value="Go"/> 
 				       </div>
