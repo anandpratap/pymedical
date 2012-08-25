@@ -94,7 +94,7 @@ def dailycps(date):
         for i in dateob.invoice_set.select_related().all():
             sale += float(i.total)
             credit += float(i.total) - float(i.paid)
-            profit += invoiceprofitcalculator(i.pk)
+            #profit += invoiceprofitcalculator(i.pk)
         for i in dateob.creditobject_set.select_related().all():
             credit -= float(i.amount)
     except:
