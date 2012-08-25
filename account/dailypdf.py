@@ -271,9 +271,11 @@ class DailyPdf:
         tpaid = round(tpaid,2)
         self.pdf.setFont("DejaVu", 10)
         self.pdf.setFont("DejaVu", 11)
-        self.pdf.drawString((LEFT+50)*mm, (TOP-i+3)*mm, "Total Sale: ")
-        self.pdf.drawString((LEFT+75)*mm, (TOP-i+3)*mm, "Rs. " + str(total))
-       
+        self.pdf.drawString((LEFT+10)*mm, (TOP-i+3)*mm, "Total Sale: ")
+        self.pdf.drawString((LEFT+35)*mm, (TOP-i+3)*mm, "Rs. " + str(total))
+        self.pdf.drawString((LEFT+75)*mm, (TOP-i+3)*mm, "Total Paid: ")
+        self.pdf.drawString((LEFT+105)*mm, (TOP-i+3)*mm, "Rs. " + str(tpaid))
+
       
  
 #        self.pdf.rect((LEFT)*mm, (TOP-i-12)*mm, (LEFT+156)*mm, (i+19)*mm, stroke=True, fill=False) #140,142
