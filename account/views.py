@@ -716,6 +716,8 @@ def generate_small_stock_row(i):
     stock_str += '<td>' + i.printed_price + '</td>'
     stock_str += '<td>' + str(i.navailable) + '</td>'
     stock_str += '<td>' + str(i.nsold) + '</td>'
+    stock_str += '<td><button onclick=myFunction('+str(i.pk)+",'"+i.tag.name.replace(' ','')+"')>remove</button></td>"
+
     stock_str += '</tr>'
     return stock_str
 
@@ -900,3 +902,24 @@ def viewdemand(request):
 
 def printinvoice(request):
     pass
+
+def remove_expired(request, pid):
+    pharma_shop = 'expired'
+    i = tablets.objects.get(pk=int(pid))
+    tmp_n = - int(i.navailable)
+    i.revision_history += str(tmp_n) + "___" + datetime.datetime.now().ctime() + "___" + pharma_shop +  "&&&"
+    i.navailable = 0.0
+    i.save()
+    pharma__shop = pharmashop.objects.filter(name=pharma_shop)[0]
+    try:
+        dateob = dateobject.objects.get(date=datetime.date.today())
+    except:
+        dateob = dateobject(date=datetime.date.today())
+        dateob.save()
+                        
+    tmpp = purchase(tab=i,nitems=int(tmp_n),date=dateob, pharmashop=pharma__shop)
+    tmpp.save()
+
+    tmptmp = i
+               
+    return HttpResponseRedirect('/stock_edit/'+str(tmptmp.pk)+'/')

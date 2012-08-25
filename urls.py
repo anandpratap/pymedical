@@ -49,7 +49,7 @@ urlpatterns = patterns('',
                        (r'^expiry_view/$', 'account.views.viewexpiry'),
                        (r'^demand_view/$', 'account.views.viewdemand'),
                        (r'^stats/', 'account.secview.statistics'),
-                       
+                       (r'^remove_expired/(?P<pid>\d+)/$', 'account.views.remove_expired'),
                        ( r'^ajax/', include( 'account.urls' ) ),
                        
                        (r'^pdfstock/', 'account.pdf.printstockt'),

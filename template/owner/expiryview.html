@@ -9,6 +9,22 @@
 		<link rel="stylesheet" href="/static/template.css" type="text/css" media="screen" charset="utf-8" />
 		<link rel="stylesheet" href="/static/colour.css" type="text/css" media="screen" charset="utf-8" />
 	</head>
+<script>
+function myFunction(x,name)
+{
+var x;
+var r=confirm("Do you really want to remove " + name);
+if (r==true)
+  {
+ window.open('/remove_expired/'+x+'/');
+  }
+else
+  {
+  x="You pressed Cancel!";
+  }
+
+}
+</script>
 	<body>
 		
 					<h1 id="head">Anand Medical Store</h1>

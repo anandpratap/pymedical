@@ -325,7 +325,7 @@ class DailyPdf:
                 self.pdf.showPage()
                 self.pdf.setFont("DejaVu", 9)
                 i = TOP - 270
-            self.pdf.drawString((LEFT+1)*mm, (TOP-i)*mm, x.pharmashop)
+            self.pdf.drawString((LEFT+1)*mm, (TOP-i)*mm, x.pharmashop.name)
             i+=0
             self.pdf.drawString((LEFT+41)*mm, (TOP-i)*mm, x.itemname)
             self.pdf.drawString((LEFT+76)*mm, (TOP-i)*mm, x.batchno)
