@@ -41,7 +41,6 @@ class patient(models.Model):
 
 #Rename tablets as units
 class tablets(models.Model):
-
     tag = models.ForeignKey(medicine, blank=False, null=False)
     expiry_date = models.DateTimeField("Expiry Date")
     purchased_date = models.DateTimeField("Purchased Date")

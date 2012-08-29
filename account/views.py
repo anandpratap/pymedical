@@ -904,20 +904,20 @@ def printinvoice(request):
     pass
 
 def remove_expired(request, pid):
-    pharma_shop = 'expired'
     i = tablets.objects.get(pk=int(pid))
+    pharma_shop = i.pharma_shop
     tmp_n = - int(i.navailable)
-    i.revision_history += str(tmp_n) + "___" + datetime.datetime.now().ctime() + "___" + pharma_shop +  "&&&"
+    i.revision_history += str(tmp_n) + "___" + datetime.datetime.now().ctime() + "___" + pharma_shop.name +  "&&&"
     i.navailable = 0.0
     i.save()
-    pharma__shop = pharmashop.objects.filter(name=pharma_shop)[0]
+    
     try:
         dateob = dateobject.objects.get(date=datetime.date.today())
     except:
         dateob = dateobject(date=datetime.date.today())
         dateob.save()
                         
-    tmpp = purchase(tab=i,nitems=int(tmp_n),date=dateob, pharmashop=pharma__shop)
+    tmpp = purchase(tab=i,nitems=int(tmp_n),date=dateob, pharmashop=pharma_shop)
     tmpp.save()
 
     tmptmp = i
