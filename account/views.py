@@ -28,6 +28,7 @@ def addinvoice(request):
     year = "["
     month = "["
     credit = "["
+    avail ="["
     try:
         invoiceno = str(invoice.objects.order_by('-pk')[0].pk + 1)
     except:
@@ -39,9 +40,11 @@ def addinvoice(request):
         if i.navailable > 0:
             item += "'" + i.tag.medicinetype.name[:3]+ ". " + i.__unicode__() + "'" 
             price += "'" + i.printed_price + "'" 
+            avail += "'" + str(i.navailable) + "'" 
             vat += "'" + str(i.vat) + "'" 
             item += ","
             price += ","
+            avail += ","
             vat += ","
             batch += "'" + str(i.batch_no) + "'" 
             batch += ","
@@ -60,7 +63,6 @@ def addinvoice(request):
         patient_name += "'" + str(i.name.replace('\n','')) + "'" 
         patient_name += ","
         credit += "'" + str(float(i.balance))+ "'"
-        
         credit += ","
     item += "]"
     price += "]"
@@ -73,7 +75,8 @@ def addinvoice(request):
     month += "]"
     year += "]"
     credit += "]"
-    return render_to_response('index1.html',{'item':item,'price':price,'vat':vat,'batch':batch,'invoiceno':invoiceno,'patient':patient_,'phone':phone_,'pname':patient_name,'mname':mname,'year':year,'month':month,'credit':credit})
+    avail += "]"
+    return render_to_response('index1.html',{'item':item,'price':price,'vat':vat,'batch':batch,'invoiceno':invoiceno,'patient':patient_,'phone':phone_,'pname':patient_name,'mname':mname,'year':year,'month':month,'credit':credit,'avail':avail})
 
 def readform(request):
     if request.COOKIES.has_key( 'invoiceno' ):

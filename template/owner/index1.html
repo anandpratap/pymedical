@@ -52,6 +52,7 @@ var vpname = {% autoescape off %}{{ pname }}{% endautoescape%};
 var vyear = {% autoescape off %}{{ year }}{% endautoescape%};
 var vmonth = {% autoescape off %}{{ month }}{% endautoescape%};
 var vcredit = {% autoescape off %}{{ credit }}{% endautoescape%};
+var vavail = {% autoescape off %}{{ avail }}{% endautoescape%};
 
 var tmp = 0;
 function print_today() {
@@ -231,12 +232,43 @@ function update_balance() {
 
 function update_price() {
   var row = $(this).parents('.item-row');
-  var price = row.find('.cost').html().replace("Rs. ","") * row.find('.quantity').val();
+  var is_valid = true;				   
+  var itemname = row.find('.item-name').val();
+				   
+for(var i=0; i<vitem.length; i++) {
+
+
+
+ if (vmname[i] == itemname) 
+
+{
+
+if(Number(vavail[i]) - row.find('.quantity').val() < 0){
+	
+		       is_valid = false;
+		          row.css('background-color', '#6A48D7');
+						     row.find('.quantity').val(Number(vavail[i]));
+ var price = row.find('.cost').html().replace("Rs. ","") * row.find('.quantity').val();
   price = roundNumber(price,2);
- 
+				   
   isNaN(price) ? row.find('.price').html("N/A") : row.find('.price').html("Rs. "+price);
   update_total();
-1
+}
+
+}
+}
+		      if(is_valid == true)
+ {
+						     row.css('background-color', '#FFFFFF');
+  var price = row.find('.cost').html().replace("Rs. ","") * row.find('.quantity').val();
+  price = roundNumber(price,2);
+				   
+  isNaN(price) ? row.find('.price').html("N/A") : row.find('.price').html("Rs. "+price);
+  update_total();
+}
+
+
+
 }
 
 //function update_cost(){
