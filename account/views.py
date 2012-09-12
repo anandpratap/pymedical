@@ -150,7 +150,12 @@ def readform(request):
                     tmp_item = invoiceitem(tab=tmp_tab, nitems=int(mquant))
                     tmp_item.save()
                     items_list.append(tmp_item)
-                    
+                    med = tmp_item.tab.tag
+                    med.consumption_rate *= int(invoice_no)-1 
+                    med.consumption_rate += (tmp_item.nitems)
+                    med.consumption_rate /= float(int(invoice_no))
+                    med.save()
+            
                 except:
                     is_ok = False
                 

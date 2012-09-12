@@ -8,6 +8,7 @@ class tabletsAdmin(admin.ModelAdmin):
         return False
 class medicineAdmin(admin.ModelAdmin):
     search_fields = ['name']
+    list_display = ('name','consumption_rate')
     
     def has_add_permission(self, request):
         return False
@@ -25,5 +26,6 @@ admin.site.register(patient)
 admin.site.register(purchase)
 admin.site.register(dateobject)
 admin.site.register(creditobject)
+admin.site.register(messages)
 
 

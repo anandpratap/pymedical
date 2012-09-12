@@ -3,6 +3,13 @@ from django import forms
 # Create your models here.
 import os
 
+class messages(models.Model):
+    msg = models.CharField(max_length=100000)
+    is_closed = models.BooleanField(default=False)
+    ndisplayed = models.IntegerField(default=0)
+    #scale 1-10
+    priority = models.IntegerField(default=1)
+
 class medicinetype(models.Model):
     name = models.CharField(max_length=100)
     minno = models.IntegerField(default=0) 
@@ -20,6 +27,8 @@ class pharmashop(models.Model):
         return self.name
 
 class medicine(models.Model):
+    consumption_rate = models.FloatField(default=0.0)
+    consumption_warn = models.FloatField(default=0.0)
     name = models.CharField(max_length=100)
     medicinetype = models.ForeignKey(medicinetype, blank=False, null=False)
     medicinefirm = models.ForeignKey(medicinefirm, blank=False, null=False)

@@ -177,3 +177,5 @@ def firmstats(request):
         results = [purc, sold]
         return render_to_response( 'firmstats.html', { 'results': results, }) 
 
+def _stats(request):
+    delta = 

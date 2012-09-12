@@ -129,7 +129,7 @@ INSTALLED_APPS = (
 #    'simple_autocomplete',
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',
-#    'django_evolution',
+    'django_evolution',
 #'django_extensions',
 
     # Uncomment the next line to enable admin documentation:
